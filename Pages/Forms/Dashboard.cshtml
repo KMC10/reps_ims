@@ -1,0 +1,699 @@
+
+@page "/Forms/Dashboard"
+@model REPS_IMS.Pages.Forms.DashboardModel
+
+@{
+    ViewData["Title"] = "Operations Dashboard";
+
+    var reportingMonth = DateTime.Now.ToString("MMMM yyyy");
+
+    var totalIncidents = Model.RegionReports.Sum(r => r.TotalIncidents);
+
+    var totalDetails = Model.RegionReports
+        .SelectMany(r => r.Categories)
+        .Sum(c => c.Total);
+
+    var regionCount = Model.RegionReports
+        .Count(r => r.TotalIncidents > 0);
+
+    var categoryTotals = Model.RegionReports
+        .SelectMany(r => r.Categories)
+        .GroupBy(c => c.CategoryName)
+        .Select(g => new
+        {
+            CategoryName = g.Key,
+            Total = g.Sum(c => c.Total)
+        })
+        .OrderByDescending(c => c.Total)
+        .ThenBy(c => c.CategoryName)
+        .ToList();
+
+    var categoriesWithRecords = categoryTotals.Count(c => c.Total > 0);
+
+    var regionTotals = Model.RegionReports
+        .Select(r => new
+        {
+            r.RegionName,
+            Total = r.TotalIncidents,
+            Details = r.Categories.Sum(c => c.Total),
+            CategoriesReported = r.Categories.Count(c => c.Total > 0)
+        })
+        .OrderByDescending(r => r.Total)
+        .ThenBy(r => r.RegionName)
+        .ToList();
+
+    var maxCategoryTotal = categoryTotals.Count > 0
+        ? categoryTotals.Max(c => c.Total)
+        : 0;
+}
+
+<style>
+    .ops-dashboard {
+        --ops-navy: #14283f;
+        --ops-navy-light: #203d5b;
+        --ops-gold: #c6a15b;
+        --ops-text: #26364a;
+        --ops-muted: #748195;
+        --ops-border: #e2e8ef;
+        --ops-background: #f3f6fa;
+        color: var(--ops-text);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        padding: 4px 0 30px;
+    }
+
+    .ops-dashboard *,
+    .ops-dashboard *::before,
+    .ops-dashboard *::after {
+        box-sizing: border-box;
+    }
+
+    .ops-header {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 25px 28px;
+        color: #fff;
+        background: var(--ops-navy);
+        border-bottom: 4px solid var(--ops-gold);
+        border-radius: 5px;
+        margin-bottom: 25px;
+    }
+
+    .ops-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 66px;
+        width: 66px;
+        height: 66px;
+        padding: 5px;
+        background: #fff;
+        border-radius: 50%;
+    }
+
+   .ops-logo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+    .ops-heading {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .ops-eyebrow {
+        margin-bottom: 7px;
+        color: #dfc58e;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+        text-transform: uppercase;
+    }
+
+    .ops-heading h1 {
+        margin: 0;
+        color: #fff;
+        font-size: 25px;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+
+    .ops-heading p {
+        margin: 7px 0 0;
+        color: #d1dbe7;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .ops-period {
+        flex: 0 0 auto;
+        padding: 12px 15px;
+        border: 1px solid #42566e;
+        border-radius: 4px;
+        background: #1b344e;
+        text-align: right;
+    }
+
+    .ops-period-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #c2cddb;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .ops-period-value {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .ops-section-label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0 0 13px;
+        color: #58677b;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+    }
+
+    .ops-section-label::before {
+        content: "";
+        width: 4px;
+        height: 15px;
+        background: var(--ops-gold);
+        border-radius: 2px;
+    }
+
+    .ops-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 17px;
+        margin-bottom: 28px;
+    }
+
+    .ops-metric {
+        position: relative;
+        min-width: 0;
+        padding: 21px;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid var(--ops-border);
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(25, 43, 65, .035);
+    }
+
+    .ops-metric::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4px;
+        height: 100%;
+        content: "";
+        background: var(--ops-gold);
+    }
+
+    .ops-metric-label {
+        margin-bottom: 13px;
+        color: var(--ops-muted);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+    }
+
+    .ops-metric-value {
+        color: var(--ops-navy);
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1.1;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .ops-metric-note {
+        margin-top: 11px;
+        color: #8490a0;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .ops-panel {
+        min-width: 0;
+        margin-bottom: 24px;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid var(--ops-border);
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(25, 43, 65, .025);
+    }
+
+    .ops-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 19px 22px;
+        border-bottom: 1px solid var(--ops-border);
+    }
+
+    .ops-panel-header h2 {
+        margin: 0;
+        color: var(--ops-navy);
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .ops-panel-header p {
+        margin: 6px 0 0;
+        color: var(--ops-muted);
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .ops-panel-tag {
+        padding: 6px 9px;
+        color: #5b6a7e;
+        background: #f1f4f8;
+        border: 1px solid #e5eaf0;
+        border-radius: 3px;
+        font-size: 10px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .ops-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .ops-table {
+        width: 100%;
+        margin: 0;
+        border-collapse: collapse;
+    }
+
+    .ops-table thead th {
+        padding: 13px 20px;
+        color: #68768a;
+        background: #f7f9fb;
+        border-bottom: 1px solid var(--ops-border);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: .8px;
+        text-align: left;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .ops-table tbody td,
+    .ops-table tfoot td {
+        padding: 15px 20px;
+        border-bottom: 1px solid #edf1f5;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    .ops-table tbody tr:last-child td {
+        border-bottom: 1px solid var(--ops-border);
+    }
+
+    .ops-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .ops-region {
+        color: var(--ops-navy);
+        font-weight: 700;
+    }
+
+    .ops-subtext {
+        display: block;
+        margin-top: 4px;
+        color: #8a95a4;
+        font-size: 10px;
+    }
+
+    .ops-number {
+        color: var(--ops-navy);
+        font-size: 13px !important;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        text-align: right !important;
+        white-space: nowrap;
+    }
+
+    .ops-count-badge {
+        display: inline-block;
+        min-width: 30px;
+        padding: 5px 8px;
+        color: #334c68;
+        background: #edf2f7;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .ops-count-badge.has-records {
+        color: #24624a;
+        background: #e8f4ed;
+    }
+
+    .ops-lower-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        gap: 22px;
+    }
+
+    .ops-category-list {
+        padding: 4px 22px 18px;
+    }
+
+    .ops-category-row {
+        padding: 15px 0;
+        border-bottom: 1px solid #edf1f5;
+    }
+
+    .ops-category-row:last-child {
+        border-bottom: 0;
+    }
+
+    .ops-category-labels {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 10px;
+    }
+
+    .ops-category-name {
+        color: #35455b;
+        font-size: 12px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .ops-category-total {
+        color: var(--ops-navy);
+        font-size: 12px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .ops-track {
+        height: 6px;
+        overflow: hidden;
+        background: #edf1f5;
+        border-radius: 4px;
+    }
+
+    .ops-bar {
+        height: 100%;
+        min-width: 0;
+        background: var(--ops-navy-light);
+        border-radius: 4px;
+    }
+
+    .ops-empty {
+        padding: 32px 20px;
+        color: var(--ops-muted);
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .ops-footer {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 5px;
+        padding-top: 15px;
+        border-top: 1px solid var(--ops-border);
+        color: #8490a0;
+        font-size: 10px;
+        line-height: 1.7;
+    }
+
+    @@media (max-width: 850px) {
+        .ops-header {
+            align-items: flex-start;
+            flex-wrap: wrap;
+            padding: 22px;
+        }
+
+        .ops-period {
+            margin-left: 84px;
+            text-align: left;
+        }
+
+        .ops-lower-grid {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .ops-header {
+            gap: 13px;
+            padding: 18px;
+        }
+
+        .ops-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 66px;
+    width: 66px;
+    height: 66px;
+    padding: 4px;
+    background: #fff;
+    border: 2px solid #c6a15b;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+        .ops-heading h1 {
+            font-size: 20px;
+        }
+
+        .ops-heading p {
+            font-size: 11px;
+        }
+
+        .ops-period {
+            margin-left: 0;
+        }
+
+        .ops-metrics {
+            grid-template-columns: 1fr;
+            gap: 11px;
+        }
+
+        .ops-metric {
+            padding: 18px;
+        }
+
+        .ops-metric-value {
+            font-size: 28px;
+        }
+
+        .ops-panel-header {
+            padding: 16px;
+        }
+
+        .ops-table thead th,
+        .ops-table tbody td,
+        .ops-table tfoot td {
+            padding: 12px;
+        }
+    }
+
+    @@media print {
+        .ops-dashboard {
+            color: #000;
+        }
+
+        .ops-header {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .ops-panel,
+        .ops-metric {
+            break-inside: avoid;
+            box-shadow: none;
+        }
+
+        .ops-lower-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+
+<div class="ops-dashboard">
+
+   
+
+    <div class="ops-section-label">Monthly overview</div>
+
+    <section class="ops-metrics" aria-label="Monthly statistics">
+
+        <div class="ops-metric">
+            <div class="ops-metric-label">Recorded incidents</div>
+            <div class="ops-metric-value">@totalIncidents.ToString("N0")</div>
+            <div class="ops-metric-note">
+                Incident records registered during the reporting month
+            </div>
+        </div>
+
+        <div class="ops-metric">
+            <div class="ops-metric-label">Active reporting regions</div>
+            <div class="ops-metric-value">@regionCount.ToString("N0")</div>
+            <div class="ops-metric-note">
+                Regions with at least one recorded incident
+            </div>
+        </div>
+
+        <div class="ops-metric">
+            <div class="ops-metric-label">Categories with records</div>
+            <div class="ops-metric-value">@categoriesWithRecords.ToString("N0")</div>
+            <div class="ops-metric-note">
+                Distinct incident categories with recorded details
+            </div>
+        </div>
+
+    </section>
+
+    <section class="ops-panel">
+        <div class="ops-panel-header">
+            <div>
+                <h2>Regional Incident Register</h2>
+                <p>Monthly incident records and associated category details by region.</p>
+            </div>
+            <span class="ops-panel-tag">@Model.RegionReports.Count regions</span>
+        </div>
+
+        @if (regionTotals.Count == 0)
+        {
+            <div class="ops-empty">No regional report data is available.</div>
+        }
+        else
+        {
+            <div class="ops-table-wrap">
+                <table class="ops-table">
+                    <thead>
+                        <tr>
+                            <th>Region</th>
+                            <th>Categories reported</th>
+                            <th style="text-align:right">Incidents</th>
+                            <th style="text-align:right">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var region in regionTotals)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="ops-region">@region.RegionName</span>
+                                    <span class="ops-subtext">Regional summary</span>
+                                </td>
+                                <td>
+                                    <span class="ops-count-badge @(region.CategoriesReported > 0 ? "has-records" : "")">
+                                        @region.CategoriesReported
+                                    </span>
+                                </td>
+                                <td class="ops-number">@region.Total.ToString("N0")</td>
+                                <td class="ops-number">@region.Details.ToString("N0")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr style="background:#f7f9fb">
+                            <td colspan="2" style="font-weight:700;color:#14283f">
+                                Combined totals
+                            </td>
+                            <td class="ops-number">@totalIncidents.ToString("N0")</td>
+                            <td class="ops-number">@totalDetails.ToString("N0")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+    </section>
+
+    <div class="ops-lower-grid">
+
+        <section class="ops-panel">
+            <div class="ops-panel-header">
+                <div>
+                    <h2>Incident Category Analysis</h2>
+                    <p>Categories ranked by recorded detail count.</p>
+                </div>
+            </div>
+
+            @if (categoryTotals.Count == 0 || maxCategoryTotal == 0)
+            {
+                <div class="ops-empty">No incident category details are available for this period.</div>
+            }
+            else
+            {
+                <div class="ops-category-list">
+                    @foreach (var category in categoryTotals.Where(c => c.Total > 0))
+                    {
+                        var width = (double)category.Total / maxCategoryTotal * 100;
+
+                        <div class="ops-category-row">
+                            <div class="ops-category-labels">
+                                <span class="ops-category-name">@category.CategoryName</span>
+                                <span class="ops-category-total">@category.Total.ToString("N0")</span>
+                            </div>
+                            <div class="ops-track"
+                                 role="img"
+                                 aria-label="@category.CategoryName: @category.Total">
+                                <div class="ops-bar"
+                                     style="width:@width.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="ops-panel">
+            <div class="ops-panel-header">
+                <div>
+                    <h2>Regional Activity</h2>
+                    <p>Regions ordered by recorded incident volume.</p>
+                </div>
+            </div>
+
+            @if (regionTotals.Count == 0)
+            {
+                <div class="ops-empty">No regional activity is available.</div>
+            }
+            else
+            {
+                <div class="ops-table-wrap">
+                    <table class="ops-table">
+                        <thead>
+                            <tr>
+                                <th>Region</th>
+                                <th style="text-align:right">Incidents</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var region in regionTotals)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="ops-region">@region.RegionName</span>
+                                    </td>
+                                    <td class="ops-number">@region.Total.ToString("N0")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </section>
+
+    </div>
+
+    <footer class="ops-footer">
+        <span>REPS IMS · Incident Management Dashboard</span>
+        <span>Figures reflect the records returned by the current monthly report.</span>
+    </footer>
+
+</div>

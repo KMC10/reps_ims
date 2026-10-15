@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>New Incident</title>
+    <style>
+        .labelDiv
+        {
+            width: 140px;
+            float: left;
+            font-family: Arial, Tahoma;
+            font-size: 9pt;
+        }
+
+        .controlDiv
+        {
+            float: left;
+            font-family: Arial, Tahoma;
+            font-size: 9pt;
+        }
+
+            .controlDiv input
+            {
+                font-family: Arial, Tahoma;
+                font-size: 9pt;
+                width:150px;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="labelDiv">
+        <label>Incident No.</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtIncidentNo" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Call Reference</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtCallRefNo" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Caller Cell/Phone</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtCallerCellNo" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Caller Name</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtCallerName" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Caller Address</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtCallerAddress" columns="20" rows="5" textmode="MultiLine" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Affected Person</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtAffectedPerson" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Relationship with Caller</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtRelationShip" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+
+    <div class="labelDiv">
+        <label>What is happening</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtIncidentHappenning" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>What has happened</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtIncidentHappend" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Where are you</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtCallerLocation" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Who are they</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtSuspectGroup" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Accent</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtAccent" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Suspect Persons</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtSuspectPerson" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Incident Priority</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="ddlPriority" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Incident Address</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtIncidentAddress" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Region</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="ddlRegion" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Reference Point</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtReferencePoint" columns="20" rows="5" textmode="MultiLine" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Call Attendant</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtCallAttendent" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+
+    <div class="labelDiv">
+        <label>Do they have weapons</label>
+    </div>
+    <div class="controlDiv">
+        <input type="checkbox" id="chkHasWeapon" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>How long ago did it happen</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtIncidentTime" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>What do they look like</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtPhysicalAppearance" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>How are they dressed</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtDressAppearance" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>Which way did they go</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtLeavingDirection" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div class="labelDiv">
+        <label>What else is happening</label>
+    </div>
+    <div class="controlDiv">
+        <input type="text" id="txtAdditionalDescription" />
+    </div>
+    <div style="clear: both">&nbsp;</div>
+
+    <div style="width: 100%;">
+        <button type="button" id="btnSave" class="btn btn-info">Save</button>
+    </div>
+
+
+</body>
+</html>

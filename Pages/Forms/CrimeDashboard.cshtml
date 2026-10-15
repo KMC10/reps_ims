@@ -1,0 +1,203 @@
+@page "/Forms/CrimeDashboard"
+@{
+    Layout = null;
+    ViewData["Title"] = "Crime Dashboard";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Crime Dashboard</title>
+
+    <script src="/bootstrap/js/jquery.min.js"></script>
+    <script src="/d3/d3.min.js"></script>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: Tahoma, sans-serif;
+        }
+
+        #xaxis .domain {
+            fill: none;
+            stroke: #000;
+        }
+
+        #xaxis text, #yaxis text {
+            font: 20px Tahoma;
+            text-transform: uppercase;
+        }
+
+        #xaxis line {
+            stroke: #c1c1c1;
+        }
+
+        .valueCSS {
+            fill: #000;
+            font: 20px Tahoma;
+        }
+
+        .svgCanvasCSS {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <svg id="svgCanvas" class="svgCanvasCSS"></svg>
+
+    <script>
+        var margin = { top: 15, right: 50, bottom: 40, left: 10 };
+        var dataCache = [];
+        var barHeight = 30;
+        var axisPadding = 270;
+        var color = d3.scale.category20c();
+
+        function LoadChart() {
+            $.ajax({
+                type: "POST",
+                url: "/Forms/CrimeDashboardData?nocache=" + Date.now(),
+                data: "{}",
+                contentType: "application/json",
+                dataType: "json",
+
+                success: function (data) {
+                    dataCache = data || [];
+                    DrawChart();
+                },
+
+                error: function (xhr) {
+                    console.error(
+                        "Crime Dashboard data error:",
+                        xhr.status,
+                        xhr.responseText
+                    );
+                }
+            });
+        }
+
+        function DrawChart() {
+            var data = dataCache || [];
+            var svg = d3.select("#svgCanvas");
+
+            svg.selectAll("*").remove();
+
+            var width = $(window).width();
+            var height = $(window).height();
+
+            svg.attr("width", width)
+               .attr("height", height);
+
+            if (data.length === 0) {
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", 40)
+                    .style("font", "20px Tahoma")
+                    .text("No crime data available");
+                return;
+            }
+
+            var crimeTypes = data.map(function (d) {
+                return d.name;
+            });
+
+            var crimeCount = data.map(function (d) {
+                return +d.size;
+            });
+
+            var chartWidth = Math.max(100, width - axisPadding - margin.right);
+            var chartHeight = Math.max(height, data.length * barHeight + 50);
+
+            svg.attr("height", Math.max(height, chartHeight));
+
+            var maxCount = d3.max(crimeCount) || 1;
+
+            var xScale = d3.scale.linear()
+                .domain([0, maxCount])
+                .range([0, chartWidth]);
+
+            var yScale = d3.scale.ordinal()
+                .domain(d3.range(data.length))
+                .rangeBands([10, data.length * barHeight + 10], 0.15);
+
+            var chart = svg.append("g")
+                .attr("transform", "translate(" + axisPadding + ",0)");
+
+            var yAxis = d3.svg.axis()
+                .orient("left")
+                .scale(yScale)
+                .tickFormat(function (d) {
+                    return crimeTypes[d];
+                })
+                .tickSize(0);
+
+            chart.append("g")
+                .attr("id", "yaxis")
+                .call(yAxis)
+                .selectAll("text")
+                .style("font", "20px Tahoma")
+                .attr("dy", ".35em");
+
+            var xAxis = d3.svg.axis()
+                .orient("bottom")
+                .scale(xScale)
+                .ticks(Math.min(10, maxCount))
+                .tickFormat(d3.format("d"));
+
+            chart.append("g")
+                .attr("id", "xaxis")
+                .attr("transform",
+                    "translate(0," + (data.length * barHeight + 20) + ")")
+                .call(xAxis);
+
+            var rows = chart.selectAll(".crime-row")
+                .data(data)
+                .enter()
+                .append("g")
+                .attr("class", "crime-row")
+                .attr("transform", function (d, i) {
+                    return "translate(0," + (yScale(i) + 3) + ")";
+                });
+
+            rows.append("rect")
+                .attr("height", Math.max(1, yScale.rangeBand() - 2))
+                .attr("width", 0)
+                .style("fill", function (d, i) {
+                    return color(i);
+                })
+                .transition()
+                .duration(600)
+                .attr("width", function (d) {
+                    return xScale(+d.size);
+                });
+
+            rows.append("text")
+                .attr("class", "valueCSS")
+                .attr("x", function (d) {
+                    return xScale(+d.size) + 8;
+                })
+                .attr("y", yScale.rangeBand() / 2)
+                .attr("dy", ".35em")
+                .text(function (d) {
+                    return d.size;
+                });
+        }
+
+        $(document).ready(function () {
+            LoadChart();
+
+            window.setInterval(LoadChart, 5000);
+
+            $(window).on("resize", function () {
+                DrawChart();
+            });
+        });
+    </script>
+</body>
+</html>

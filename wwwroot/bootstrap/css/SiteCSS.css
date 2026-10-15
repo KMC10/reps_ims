@@ -1,0 +1,84 @@
+﻿body {
+}
+
+.TableGap {
+    padding-bottom: 5px;
+}
+
+.TableGapDetails {
+    padding-bottom: 10px;
+}
+
+.LabelColumn {
+    width: 150px;
+}
+
+.LabelColumnSearch {
+    width: 90px;
+    text-align: right;
+}
+
+.LabelColumnDetails {
+    text-align: left;
+    width: 200px;
+}
+
+    .LabelColumnDetails span {
+        padding: 0px !important;
+    }
+
+.CheckBoxList {
+    font-size: 8pt;
+}
+
+    .CheckBoxList td {
+        padding-bottom: 3px;
+        padding-right: 5px;
+    }
+
+.SearchPanel {
+    border-right: solid 1px #F5F5F5;
+}
+
+.grid th {
+    background-color: #F5F5F5;
+}
+
+.EmptyRow {
+    background: #F5F5F5;
+    text-align: center;
+    padding: 10px 0px 10px 0px;
+}
+
+.UserLabel {
+    font-size: 12px;
+}
+
+.HeaderRow {
+    background-color: #5BC0DE;
+    color: #FFFFFF;
+}
+
+.navbar {
+    margin-bottom: 5px !important;
+}
+
+.ContainerRow {
+    background-color: #FFFFFF;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.ReportClass {
+    font-size: 12px;
+}
+
+.ReportClass th{
+    font-size: 12px;
+    background-color:#F5F5F5;
+}
+
+.ReportClass td{
+    font-size: 11px;
+    text-align:left;
+}

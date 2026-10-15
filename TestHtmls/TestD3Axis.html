@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../bootstrap/js/jquery.min.js"></script>
+    <script src="../d3/d3.min.js"></script>
+
+    <script>
+
+        ///http://www.sitepoint.com/simple-bubble-charts-using-d3-js/
+
+        var sampleData = [{
+            "x": 1,
+            "y": 5
+        }, {
+            "x": 20,
+            "y": 20
+        }, {
+            "x": 40,
+            "y": 10
+        }, {
+            "x": 60,
+            "y": 40
+        }, {
+            "x": 80,
+            "y": 5
+        }, {
+            "x": 100,
+            "y": 60
+        }];
+
+        $(function () {
+            InitChart();
+        });
+
+        function InitChart() {
+
+            var vis = d3.select("#svgVisualize");
+
+            var xRange = d3.scale.linear()
+                .range([40, 400])
+                .domain([d3.min(sampleData, function (d) {
+                    return (d.x);
+                }), d3.max(sampleData, function (d) {
+                    return d.x;
+                })]);
+
+            var yRange = d3.scale.linear()
+                .range([400, 40])
+                .domain([d3.min(sampleData, function (d) {
+                    return d.y;
+                }), d3.max(sampleData, function (d) {
+                    return d.y;
+                })]);
+
+            var xAxis = d3.svg.axis().scale(xRange);
+            var yAxis = d3.svg.axis().scale(yRange).orient("left");
+            vis.append("svg:g").call(xAxis).attr("transform", "translate(0,400)");
+            vis.append("svg:g").call(yAxis).attr("transform", "translate(40,0)");
+            var circles = vis.selectAll("circle").data(sampleData);
+            circles
+                .enter()
+                .insert("circle")
+                .attr("cx", function (d) { return xRange(d.x); })
+                .attr("cy", function (d) { return yRange(d.y); })
+                .attr("r", 10)
+                .style("fill", "red");
+        }
+    </script>
+
+</head>
+<body>
+    <svg id="svgVisualize" width="500" height="500"></svg>
+</body>
+</html>

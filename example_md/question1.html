@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Page Template</title>
+
+        <style>
+	        .axis {
+	          font: 10px sans-serif;
+	        }
+
+	        .axis path,
+	        .axis line {
+	          fill: none;
+	          stroke: #000;
+	          shape-rendering: crispEdges;
+	        }
+            rect:hover {
+				fill: orange;
+			}
+
+            .d3-tip {
+              line-height: 1;
+              font-weight: bold;
+              padding: 12px;
+              background: rgba(0, 0, 0, 0.8);
+              color: #fff;
+              border-radius: 2px;
+            }
+
+            /* Creates a small triangle extender for the tooltip */
+            .d3-tip:after {
+              box-sizing: border-box;
+              display: inline;
+              font-size: 10px;
+              width: 100%;
+              line-height: 1;
+              color: rgba(0, 0, 0, 0.8);
+              content: "\25BC";
+              position: absolute;
+              text-align: center;
+            }
+
+            /* Style northward tooltips differently */
+            .d3-tip.n:after {
+              margin: -1px 0 0 0;
+              top: 100%;
+              left: 0;
+            }
+
+	  </style>
+
+        	<script src="http://d3js.org/d3.v3.min.js"></script>
+            <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+
+            var dataset = [];
+
+            d3.csv("Health spending by country.csv", function (error, data) {
+                if (error) {  //If error is not null, something went wrong.
+                    console.log(error);  //Log the error.
+                } else {      //If no error, the file loaded correctly. Yay!
+
+
+                    //Include other code to execute after successful file load here
+                    dataset = data.map(function (d) { return [+d["Location"]], [+d["Per capita total spending on health (PPP int. $)"]]; });
+                    // dataset = data;
+                    //generateVis();
+                    // hideLoadingMsg();
+                    console.log(dataset);   //Log the data.
+
+                    var buckets = 1000;
+                   
+
+                    var margin = { top: 10, right: 30, bottom: 30, left: 30 },
+                        width = 960  - margin.left - margin.right,
+                        height = 500 - margin.top - margin.bottom;
+
+                    // Generate a histogram using twenty uniformly-spaced bins.
+
+                    var data = d3.layout.histogram()
+                       .bins(20)
+                        (dataset);
+
+                    var x = d3.scale.linear()
+                        .domain([0, d3.max(data, function (d) { return d.x; })])
+                        .range([0, width]);
+
+                                       
+
+                    var y = d3.scale.linear()
+                        .domain([0, d3.max(data, function (d) { return d.y; })])
+                        .range([height, 0]);
+                    // tips for frequency
+
+                    var tip = d3.tip()
+                          .attr('class', 'd3-tip')
+                          .offset([-10, 0])
+                          .html(function (d) {
+                              return "<strong>Value:</strong> <span style='color:red'>" + d + "</span>";
+                          })
+
+                   
+                    // set x axis
+                    var xAxis = d3.svg.axis()
+                        .scale(x)
+                       .orient("bottom");
+
+                    // set y axis
+                    var yAxis = d3.svg.axis()
+                        .scale(y)
+                        .ticks(30)
+                        .orient("Left");
+
+                    // set buckets for the data and setting value to look better histogram.
+                    var s_width = d3.scale.ordinal().domain(buckets).rangeRoundBands(x.range(), 0.7).rangeBand();
+
+                    var svg = d3.select("body").append("svg")
+                        .attr("width", s_width  + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    svg.call(tip);
+
+                    // add the x axis and x-label
+                    svg.append("g")
+                      .attr("class", "x axis")
+                      .attr("transform", "translate(0," + height + ")")
+                      .call(xAxis);
+                    svg.append("text")
+                      .attr("class", "xlabel")
+                      .attr("text-anchor", "middle")
+                      .attr("x", width / 2)
+                      .attr("y", height + margin.bottom)
+                      .text("Per capita total spending on health (PPP int. $)");
+
+                    // add the y axis and y-label
+                    svg.append("g")
+                      .attr("class", "y axis")
+                      //.attr("transform", "translate(0,0)")
+                      .attr("transform", "rotate(90)")
+                      .call(yAxis);
+                    svg.append("text")
+                      .attr("class", "ylabel")
+                      .attr("y", 0 - margin.left) // x and y switched due to rotation
+                      .attr("x", 0 - (height / 2))
+                      .attr("dy", "1em")
+                      .style("text-anchor", "middle")
+                      .text("Value");
+
+
+                    var bar = svg.selectAll(".bar")
+                        .data(data)
+                        .enter().append("g")
+                        .attr("class", "bar")
+                        .attr("fill", "blue")
+                        .attr("transform", function (d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+                            .on('mouseover', tip.show)
+                            .on('mouseout', tip.hide);
+
+                    bar.append("rect")
+                        .attr("x", 1)
+                        .attr("width", x(data[0].dx) - 1)
+                        .attr("height", function (d) { return height - y(d.y); });
+                       
+                 
+                  
+
+                }
+
+            });
+
+         
+
+        </script>
+    </body>
+</html>

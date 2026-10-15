@@ -1,0 +1,57 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.css?v0.7" />
+    <link rel="stylesheet" href="../bootstrap/css/SiteCSS.css?v0.2" />
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap-datetimepicker.css" />
+
+    <script src="../bootstrap/js/jquery.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../bootstrap/js/moment-with-locales.js"></script>
+    <script src="../bootstrap/js/bootstrap-datetimepicker.js"></script>
+    
+</head>
+<body>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <div class="input-group date" id="datetimepicker5">
+                        <input type="text" id="txtSurgeryStartTime" style="width: 100%;" class="form-control input-sm" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+                <input type="button" id="btnSave" value="Save" />
+            </div>
+            <script type="text/javascript">
+                $(function () {
+                    $('#datetimepicker5').datetimepicker({
+                        format: "DD/MM/YYYY HH:mm:SS"
+                    });
+                });
+
+                $(window).bind("beforeunload", function () {
+                    return confirm("Do you really want to close?");
+                })
+
+                $(document).ready(function () {
+                    $("#btnSave").click(function () {
+                        $(window).off("beforeunload");
+                    });
+
+                });
+
+            </script>
+        </div>
+    </div>
+
+
+
+</body>
+<html>

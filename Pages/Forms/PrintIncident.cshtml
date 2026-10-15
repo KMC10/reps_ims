@@ -1,0 +1,184 @@
+@page "/Forms/PrintIncident"
+@{ Layout = null; ViewData["Title"] = "PrintIncident"; }
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Print Incident</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="//bootstrap/css/bootstrap.css?v0.7" />
+    <link rel="stylesheet" href="//bootstrap/css/SiteCSS.css?v0.2" />
+    <link rel="stylesheet" href="//bootstrap/css/bootstrap-datetimepicker.css" />
+
+    <script src="//bootstrap/js/jquery.min.js"></script>
+    <script src="//bootstrap/js/bootstrap.min.js"></script>
+    <script src="//bootstrap/js/moment-with-locales.js"></script>
+    <script src="//bootstrap/js/bootstrap-datetimepicker.js"></script>
+</head>
+<body>
+    <form method="post">
+        <div class="container-fluid" style="">
+            <div class="col-md-12">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search Incident</div>
+                    <div class="panel-body">
+
+                        <div class="col-md-3">
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td class="LabelColumnSearch">
+                                        <label class="control-label input-sm">From Date</label>
+                                    </td>
+                                    <td class="TableGap">
+                                        <input id="txtDateFrom" name="txtDateFrom" type="text" class="form-control" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="LabelColumnSearch">
+                                        <label class="control-label input-sm">PIN No.</label>
+                                    </td>
+                                    <td class="TableGap">
+                                        <input id="txtCallerPIN" name="txtCallerPIN" type="text" class="form-control" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="LabelColumnSearch">
+                                        <label class="control-label input-sm">Incident No.</label>
+                                    </td>
+                                    <td class="TableGap">
+                                        <input id="txtIncidentNo" name="txtIncidentNo" type="text" class="form-control" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="LabelColumnSearch">
+                                        <label class="control-label input-sm">Phone No.</label>
+                                    </td>
+                                    <td class="TableGap">
+                                        <input id="txtPhoneNo" name="txtPhoneNo" type="text" class="form-control" />
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td class="LabelColumnSearch">
+                                        <label class="control-label input-sm">&nbsp;</label>
+                                    </td>
+                                    <td class="TableGap" style="text-align: right;">
+                                        
+                                        
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+
+                        <div class="col-md-9">
+
+                            <p class="bg-success" runat="server" visible="false" id="lblSussessMessage" style="padding: 10px 0px 10px 5px;">Incident information saved.</p>
+                            <p class="bg-danger" runat="server" visible="false" id="lblErrirMessage" style="padding: 10px 0px 10px 5px;">Incident information saved.</p>
+
+                            
+                                <Columns>
+
+                                    
+                                        <ItemTemplate>
+                                            
+                                        </ItemTemplate>
+                                    
+
+                                    
+                                        <ItemTemplate>
+                                            
+                                        </ItemTemplate>
+                                    
+
+                                    
+                                        <ItemTemplate>
+                                            
+                                        </ItemTemplate>
+                                    
+
+                                    
+                                        <ItemTemplate>
+                                            
+                                        </ItemTemplate>
+                                    
+
+                                    
+                                        <ItemTemplate>
+                                            
+                                        </ItemTemplate>
+                                    
+
+                                    
+                                        <ItemTemplate>
+                                            
+                                        </ItemTemplate>
+                                    
+
+                                    
+                                        <ItemTemplate>
+                                            
+                                        </ItemTemplate>
+                                    
+                                    
+                                        <ItemTemplate>
+                                            <a class="btn btn-primary btn-xs btn-block" href="javascript:return false;" incidentid='<%# DataBinder.Eval(Container.DataItem, "IncidentID") %>' onclick="PrintDetails(this)">Print</a>
+                                        </ItemTemplate>
+                                    
+                                </Columns>
+                                <EmptyDataTemplate>
+                                    <div class="EmptyRow">No incident information found.</div>
+                                </EmptyDataTemplate>
+                            
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    <script type="text/javascript">
+
+        function PrintDetails(btn) {
+
+            var incidentID = $(btn).attr("incidentID");
+            var url = "IncidentPrintPreview.aspx?iid=" + incidentID.toString()
+            var thePopup = window.open(url, "_blank");
+        }
+
+        $(document).ready(function () {
+            $('#<%= txtDateFrom.ClientID %>').datetimepicker({
+                format: "DD/MM/YYYY HH:mm"
+            });
+
+            $('#<%= txtToDate.ClientID %>').datetimepicker({
+                format: "DD/MM/YYYY HH:mm"
+            });
+        });
+
+
+    </script>
+
+    <style type="text/css">
+        .modal-lg
+        {
+            width: 95%;
+        }
+
+        .form-control
+        {
+            padding-bottom: 2px !important;
+            padding-top: 2px !important;
+            height: 27px !important;
+        }
+    </style>
+</body>
+</html>

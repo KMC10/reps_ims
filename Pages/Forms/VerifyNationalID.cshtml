@@ -1,0 +1,182 @@
+@page "/Forms/VerifyNationalID"
+@{ Layout = null; ViewData["Title"] = "VerifyNationalID"; }
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="//bootstrap/css/bootstrap.css?v0.7" />
+    <link rel="stylesheet" href="//bootstrap/css/SiteCSS.css?v0.2" />
+    <link rel="stylesheet" href="//bootstrap/css/datepicker.css?v0.1" />
+
+    <script src="//bootstrap/js/jquery.min.js"></script>
+    <script src="//bootstrap/js/bootstrap.min.js"></script>
+    <script src="//bootstrap/js/bootstrap-datepicker.js?v0.1"></script>
+
+</head>
+<body>
+    <form method="post">
+        <div class="container-fluid">
+            <div class="col-md-12">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <label>Veryfy National ID</label>
+                    </div>
+                    <div class="panel-body">
+
+                        <p class="bg-danger" runat="server" visible="false" id="lblErrirMessage" style="padding: 10px 0px 10px 5px;">Error.</p>
+
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="col-md-7"></div>
+
+                                <div class="col-md-5">
+                                    <div class="form-horizontal">
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label input-sm">National ID</label>
+                                            <div class="col-sm-8">
+                                                <input id="txtNote" name="txtNote" type="text" class="form-control" />
+                                            </div>
+                                            <div class="col-sm-2 btn-group-sm">
+                                                <button type="submit" id="btnSave" name="btnSave" class="btn btn-info" data-handler="">Search</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-sm">
+                                        <label class="control-label">Name</label>
+                                        
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label class="control-label">Surname</label>
+                                        
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label class="control-label">Marital Status</label>
+                                        
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label class="control-label">Sex</label>
+                                        
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label class="control-label">Date of Birth</label>
+                                        
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label class="control-label">Chief</label>
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-sm">
+                                        <label class="control-label">Indvuna</label>
+                                        
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label class="control-label">PIN</label>
+                                        
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label class="control-label">Graded Tax Number</label>
+                                        
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label class="control-label">Citizenship Status</label>
+                                        
+                                    </div>
+
+                                      <div class="form-group form-group-sm">
+                                        <label class="control-label">Birth Region</label>
+                                        
+                                    </div>
+
+                                     <div class="form-group form-group-sm">
+                                        <label class="control-label">Region</label>
+                                        
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="form-group form-group-sm">
+                                        <label class="control-label"></label>
+
+                                        <div class='lightbox-content img-thumbnail'>
+                                            
+
+                                            <div class="lightbox-caption">
+                                                <p>Your caption here</p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+        </div>
+
+    </form>
+
+
+    <style type="text/css">
+        .col-md-12 {
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+
+        .col-md-9 {
+            padding: 0px 0px;
+        }
+
+        .col-md-2 {
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+
+        .form-group-sm {
+            font-size: 12px;
+        }
+
+        .form-group {
+            padding-bottom: 0px !important;
+            margin-bottom: 9px !important;
+        }
+
+        .form-control {
+            padding-bottom: 2px !important;
+            padding-top: 2px !important;
+            height: 27px !important;
+        }
+
+        .CheckBoxList td input {
+            margin-right: 3px;
+        }
+
+        .CheckBoxList td label {
+            font-weight: normal !important;
+        }
+    </style>
+</body>
+
+</html>

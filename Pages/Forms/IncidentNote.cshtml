@@ -1,0 +1,135 @@
+
+@page "/Forms/IncidentNote"
+@model REPS_IMS.Pages.Forms.IncidentNoteModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Incident Note";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Incident Note</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="/bootstrap/css/SiteCSS.css" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger">
+                            @Model.ErrorMessage
+                        </div>
+                    }
+
+                    <form method="post">
+                        <input type="hidden" name="iid" value="@Model.iid" />
+                        <input type="hidden" name="ext" value="@Model.ext" />
+                        <input type="hidden" asp-for="EditNoteID" />
+
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="form-inline">
+                                    <div class="form-group" style="width: 75%;">
+                                        <input asp-for="NoteText"
+                                               class="form-control"
+                                               placeholder="New Note"
+                                               style="width: 100%;"
+                                               required />
+                                    </div>
+
+                                    <button type="submit"
+                                            asp-page-handler="Save"
+                                            class="btn btn-info">
+                                        Save
+                                    </button>
+
+                                    <button type="submit"
+                                            asp-page-handler="Reset"
+                                            formnovalidate
+                                            class="btn btn-default">
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-condensed grid"
+                                       style="font-size: 12px !important;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 140px;">Capture Date</th>
+                                            <th style="width: 120px;">Capture By</th>
+                                            <th>Note</th>
+                                            <th style="width: 70px;"></th>
+                                            <th style="width: 80px;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Notes.Count == 0)
+                                        {
+                                            <tr>
+                                                <td colspan="5">No notes found.</td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            @foreach (var note in Model.Notes)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @(note.CaptureDate?.ToString("dd/MM/yyyy HH:mm") ?? "")
+                                                    </td>
+                                                    <td>@note.CaptureBy</td>
+                                                    <td style="white-space: pre-wrap;">@note.NoteDescription</td>
+                                                    <td>
+                                                        <form method="post">
+                                                            <input type="hidden" name="iid" value="@Model.iid" />
+                                                            <input type="hidden" name="ext" value="@Model.ext" />
+                                                            <button type="submit"
+                                                                    asp-page-handler="Edit"
+                                                                    name="noteID"
+                                                                    value="@note.NoteID"
+                                                                    class="btn btn-warning btn-sm">
+                                                                Edit
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                    <td>
+                                                        <form method="post"
+                                                              onsubmit="return confirm('Are you sure?');">
+                                                            <input type="hidden" name="iid" value="@Model.iid" />
+                                                            <input type="hidden" name="ext" value="@Model.ext" />
+                                                            <button type="submit"
+                                                                    asp-page-handler="Delete"
+                                                                    name="noteID"
+                                                                    value="@note.NoteID"
+                                                                    class="btn btn-danger btn-sm">
+                                                                Delete
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

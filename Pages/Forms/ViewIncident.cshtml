@@ -1,0 +1,323 @@
+
+@page "/Forms/ViewIncident"
+@model REPS_IMS.Pages.Forms.ViewIncidentModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "View Incident";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>View Incidents</strong>
+    </div>
+
+    <div class="panel-body">
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">
+                @Model.ErrorMessage
+            </div>
+        }
+
+        <!-- Incident filters -->
+        <form method="post" class="well well-sm">
+            <div class="row">
+
+                <div class="col-md-2 col-sm-4">
+                    <label>From Date</label>
+                    <input asp-for="DateFrom"
+                           class="form-control input-sm datepicker"
+                           placeholder="dd/mm/yyyy" />
+                </div>
+
+                <div class="col-md-2 col-sm-4">
+                    <label>To Date</label>
+                    <input asp-for="DateTo"
+                           class="form-control input-sm datepicker"
+                           placeholder="dd/mm/yyyy" />
+                </div>
+
+                <div class="col-md-2 col-sm-4">
+                    <label>Category</label>
+                    <select asp-for="CategoryId"
+                            class="form-control input-sm"
+                            asp-items="@(new SelectList(Model.Categories, "Id", "Name", Model.CategoryId))"
+                            onchange="this.form.action='?handler=CategoryChanged';this.form.submit();">
+                        <option value="-1">All Categories</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 col-sm-4">
+                    <label>Incident Type</label>
+                    <select asp-for="TypeId"
+                            class="form-control input-sm"
+                            asp-items="@(new SelectList(Model.Types, "Id", "Name", Model.TypeId))">
+                        <option value="-1">All Types</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 col-sm-4">
+                    <label>Region</label>
+                    <select asp-for="RegionId"
+                            class="form-control input-sm"
+                            asp-items="@(new SelectList(Model.Regions, "Id", "Name", Model.RegionId))">
+                        <option value="-1">All Regions</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 col-sm-4">
+                    <label>&nbsp;</label>
+                    <button type="submit"
+                            asp-page-handler="Search"
+                            class="btn btn-info btn-sm btn-block">
+                        <span class="glyphicon glyphicon-search"></span>
+                        Search
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+        <!-- Search by incident number -->
+        <form method="post" class="form-inline"
+              style="margin-bottom:20px;">
+            <div class="form-group">
+                <label for="IncidentNoSearch">Caller Phone No: </label>
+                <input asp-for="CallerPhoneSearch"
+                       class="form-control input-sm"
+                       placeholder="Enter phone number"
+                       style="width:250px; margin-left:8px;" />
+            </div>
+
+            <button type="submit"
+                    asp-page-handler="SearchByIncidentNo"
+                    class="btn btn-info btn-sm"
+                    style="margin-left:8px;">
+                Search by CallerPhone No.
+            </button>
+        </form>
+
+        <hr />
+
+        <h4>Incident Records</h4>
+
+        <!-- Incident records -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-condensed grid"
+                   style="font-size:12px;">
+                <thead>
+                    <tr>
+                        <th>Incident No.</th>
+                        <th>Incident Type</th>
+                        <th>Call Reference</th>
+                        <th>Date</th>
+                        <th>Call Attendant</th>
+                        <th>Region</th>
+                        <th>Status</th>
+                        <th style="width:180px;">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model.Incidents.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center">
+                                No incident information found.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var incident in Model.Incidents)
+                        {
+                            <tr>
+                                <td>@incident.CallerPhone</td>
+                                <td>@incident.IncidentTypeName</td>
+                                <td>@incident.ReferenceNo</td>
+                                <td>@incident.CaptureDate</td>
+                                <td>@incident.CapturedBy</td>
+                                <td>@incident.RegionName</td>
+                                <td>@incident.Status</td>
+
+                                <td style="white-space:nowrap;text-align:center;">
+                                    <a class="btn btn-info btn-xs"
+                                       href="/Forms/AddIncident?iid=@incident.IncidentID&amp;returnUrl=%2FForms%2FViewIncident">
+                                        Edit
+                                    </a>
+
+                                    <button type="button"
+                                            class="btn btn-default btn-xs"
+                                            onclick="ShowDetails(@incident.IncidentID)">
+                                        View
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-default btn-xs"
+                                            onclick="ShowHistory(@incident.IncidentID)">
+                                        History
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-default btn-xs"
+                                            onclick="ShowNotes(@incident.IncidentID)">
+                                        Notes
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- Incident details modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="incidentModalTitle">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+                <h4 class="modal-title" id="incidentModalTitle">
+                    Incident Details
+                </h4>
+            </div>
+
+            <div class="modal-body" style="height:500px;">
+                <iframe id="ifDetailsFrame"
+                        src="about:blank"
+                        title="Incident information"
+                        style="border:none;width:100%;height:100%;">
+                </iframe>
+            </div>
+
+            <!-- Modal footer: print and close -->
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="PrintViewedIncident()">
+                    <span class="glyphicon glyphicon-print"></span>
+                    Print / Save as PDF
+                </button>
+
+                <button type="button"
+                        class="btn btn-default"
+                        data-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function ShowDetails(incidentID) {
+        $('#myModal .modal-title').text('Incident Details');
+
+        $('#ifDetailsFrame').attr(
+            'src',
+            '/Forms/IncidentDetails?iid=' +
+            encodeURIComponent(incidentID)
+        );
+
+        $('#myModal').modal('show');
+    }
+
+    function ShowHistory(incidentID) {
+        $('#myModal .modal-title').text('Incident History');
+
+        $('#ifDetailsFrame').attr(
+            'src',
+            '/Forms/IncidentHistory?ref=sup&iid=' +
+            encodeURIComponent(incidentID)
+        );
+
+        $('#myModal').modal('show');
+    }
+
+    function ShowNotes(incidentID) {
+        $('#myModal .modal-title').text('Incident Note');
+
+        $('#ifDetailsFrame').attr(
+            'src',
+            '/Forms/IncidentNote?ref=sup&iid=' +
+            encodeURIComponent(incidentID)
+        );
+
+        $('#myModal').modal('show');
+    }
+
+    function PrintViewedIncident() {
+        var frame = document.getElementById('ifDetailsFrame');
+
+        if (!frame || !frame.contentWindow) {
+            alert('Please open an incident first.');
+            return;
+        }
+
+        var frameUrl = frame.getAttribute('src');
+
+        if (!frameUrl || frameUrl === 'about:blank') {
+            alert('Please open an incident first.');
+            return;
+        }
+
+        // Only print incident details, not History or Notes.
+        if (!frameUrl.toLowerCase().includes('/forms/incidentdetails')) {
+            alert('Please click View on an incident before printing.');
+            return;
+        }
+
+        try {
+            var printWindow = frame.contentWindow;
+
+            if (!printWindow.document.body ||
+                !printWindow.document.body.innerText.trim()) {
+                alert('The incident details have not finished loading.');
+                return;
+            }
+
+            printWindow.focus();
+            printWindow.print();
+        }
+        catch (error) {
+            alert('Unable to print the incident details. Please try again.');
+        }
+    }
+
+    $(document).ready(function () {
+        $('.datepicker').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd/mm/yyyy'
+        });
+    });
+</script>
+
+<style>
+    .modal-lg {
+        width: 95%;
+    }
+
+    @@media (max-width: 767px) {
+        .modal-lg {
+            width: 95%;
+            margin: 10px auto;
+        }
+
+        .modal-body {
+            height: 70vh !important;
+        }
+    }
+</style>

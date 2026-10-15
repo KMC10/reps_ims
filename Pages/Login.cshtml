@@ -1,0 +1,42 @@
+@page
+@model LoginModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Login";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login</title>
+    <link rel="stylesheet" href="~/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/bootstrap/css/SiteCSS.css" />
+</head>
+<body>
+<form method="post">
+    <div style="text-align:center;">
+        <div class="panel panel-default" style="width:370px;margin-left:auto;margin-right:auto;text-align:left;margin-top:150px;">
+            <div class="panel-heading"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Login.</div>
+            <div class="panel-body">
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="bg-danger" style="padding:10px 0 10px 5px;margin-bottom:5px;">@Model.ErrorMessage</div>
+                }
+                <div class="input-group">
+                    <span class="input-group-addon" style="width:130px;text-align:right;">Username</span>
+                    <input asp-for="Username" class="form-control" style="width:200px;" />
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" style="width:130px;text-align:right;">Password</span>
+                    <input asp-for="Password" type="password" class="form-control" style="width:200px;" />
+                </div>
+                <div class="input-group" style="width:330px;text-align:center;margin-top:5px;">
+                    <button type="submit" class="btn btn-info btn-block">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../Finesse/history/jquery-1.9.1.min.js"></script>
+    <style>
+        .headerRow
+        {
+            background-color: #a3a1a1;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <table id="tblHistory" style="width: 100%;">
+        <tr class="headerRow">
+            <td style="padding: 5px 0px 5px 5px;">Caller Phone</td>
+            <td style="width: 100px;">&nbsp;</td>
+        </tr>
+
+
+    </table>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var url = "http://localhost:50253/api/incidenthistory/01911127272";
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                datatype: "json",
+                data: "{}",
+                success: OnSuccess,
+                error: OnError
+            });
+        });
+
+        function OnSuccess(data) {
+
+            $("#tblHistory").find("tr:gt(0)").remove();
+
+            $.each(data, function (key, value) {
+
+                $('#tblDeduction tr:last').after('<tr><td>' + value.IncidentNo + '</td><td><button onclick="finesse.modules.HistoryGadget.makeCall("' + value.CallerPhone + '");">Make a Call</button></td></tr>');
+            });
+
+        }
+
+        function OnError() {
+
+        }
+    </script>
+
+</body>
+</html>

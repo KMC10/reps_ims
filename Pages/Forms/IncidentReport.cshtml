@@ -1,0 +1,473 @@
+
+@page "/Forms/IncidentReport"
+@model REPS_IMS.Pages.Forms.IncidentReportModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Incident Report";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Incident Report</title>
+
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css?v0.7" />
+    <link rel="stylesheet" href="/bootstrap/css/SiteCSS.css?v0.2" />
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap-datetimepicker.css" />
+
+    <script src="/bootstrap/js/jquery.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/bootstrap/js/moment-with-locales.js"></script>
+    <script src="/bootstrap/js/bootstrap-datetimepicker.js"></script>
+
+    <style>
+        body {
+            background: #f4f6f9;
+            color: #263238;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .page-container {
+            padding: 20px;
+        }
+
+        .search-panel,
+        .report-panel {
+            background: #fff;
+            border: 1px solid #dce2e8;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel-heading-custom {
+            background: #263b55;
+            color: #fff;
+            padding: 13px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .panel-content {
+            padding: 20px;
+        }
+
+        .search-panel label {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .search-panel .form-control {
+            height: 36px !important;
+            padding: 6px 10px !important;
+            border-radius: 4px;
+        }
+
+        .filter-group {
+            margin-bottom: 15px;
+        }
+
+        .report-document {
+            background: #fff;
+            color: #222;
+            padding: 24px;
+        }
+
+        .report-header {
+            text-align: center;
+            border-bottom: 2px solid #263b55;
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+        }
+
+        .report-header h2 {
+            margin: 0 0 8px;
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #263b55;
+        }
+
+        .report-header p {
+            margin: 4px 0;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .report-subtitle {
+            font-weight: 600;
+            font-size: 14px !important;
+            color: #263b55 !important;
+        }
+
+        .report-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin-bottom: 0;
+        }
+
+        .report-table thead th {
+            background: #263b55 !important;
+            color: #fff !important;
+            font-weight: 600;
+            text-align: left;
+            padding: 8px 6px;
+            border: 1px solid #d5dbe2 !important;
+            vertical-align: middle;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .report-table tbody td {
+            padding: 7px 6px;
+            border: 1px solid #d5dbe2 !important;
+            vertical-align: top;
+            overflow-wrap: anywhere;
+        }
+
+        .report-table tbody tr:nth-child(even) {
+            background: #f3f6f9 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .report-footer {
+            margin-top: 15px;
+            padding-top: 8px;
+            border-top: 1px solid #d5dbe2;
+            color: #666;
+            font-size: 10px;
+        }
+
+        .no-print {
+            display: inline-block;
+        }
+
+        .message-area {
+            margin-bottom: 15px;
+        }
+
+        @@media print {
+            @@page {
+                size: landscape;
+                margin: 10mm;
+            }
+
+            html,
+            body {
+                background: #fff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            .page-container {
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
+
+            .search-panel,
+            .no-print,
+            .message-area,
+            nav,
+            footer {
+                display: none !important;
+            }
+
+            .report-panel {
+                border: none !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .report-document {
+                display: block !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .report-header {
+                margin-bottom: 12px;
+                padding-bottom: 8px;
+                break-after: avoid;
+                page-break-after: avoid;
+            }
+
+            .report-header h2 {
+                font-size: 18px;
+            }
+
+            .report-table-wrapper {
+                overflow: visible !important;
+            }
+
+            .report-table {
+                width: 100% !important;
+                font-size: 8px;
+            }
+
+            .report-table thead {
+                display: table-header-group;
+            }
+
+            .report-table tr {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .report-table th,
+            .report-table td {
+                padding: 4px 3px;
+                overflow-wrap: anywhere;
+            }
+
+            a {
+                text-decoration: none !important;
+                color: inherit !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+
+        <form method="post">
+
+            <!-- Search fields: hidden when printing -->
+            <section class="search-panel no-print">
+
+                <div class="panel-heading-custom">
+                    Search Incidents
+                </div>
+
+                <div class="panel-content">
+
+                    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger message-area">
+                            @Model.ErrorMessage
+                        </div>
+                    }
+
+                    <div class="row">
+
+                        <div class="col-md-3 filter-group">
+                            <label for="DateFrom">From Date</label>
+                            <input asp-for="DateFrom"
+                                   type="text"
+                                   class="form-control"
+                                   autocomplete="off" />
+                        </div>
+
+                        <div class="col-md-3 filter-group">
+                            <label for="DateTo">To Date</label>
+                            <input asp-for="DateTo"
+                                   type="text"
+                                   class="form-control"
+                                   autocomplete="off" />
+                        </div>
+
+                        <div class="col-md-3 filter-group">
+                            <label for="CallerPIN">Caller PIN</label>
+                            <input asp-for="CallerPIN"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3 filter-group">
+                            <label for="IncidentNo">Incident No.</label>
+                            <input asp-for="IncidentNo"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3 filter-group">
+                            <label for="PhoneNo">Phone No.</label>
+                            <input asp-for="PhoneNo"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3 filter-group">
+                            <label for="AgentID">Agent ID</label>
+                            <input asp-for="AgentID"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3 filter-group">
+                            <label for="CategoryId">Category</label>
+                            <select asp-for="CategoryId"
+                                    class="form-control"
+                                    asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Categories, "Id", "Name"))">
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 filter-group">
+                            <label for="TypeId">Incident Type</label>
+                            <select asp-for="TypeId"
+                                    class="form-control"
+                                    asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Types, "Id", "Name"))">
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 filter-group">
+                            <label for="RegionId">Region</label>
+                            <select asp-for="RegionId"
+                                    class="form-control"
+                                    asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Regions, "Id", "Name"))">
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 filter-group">
+                            <label for="IncidentStatus">Status</label>
+                            <select asp-for="IncidentStatus"
+                                    class="form-control"
+                                    asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Statuses, "Id", "Name"))">
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="text-right">
+                        <button type="submit"
+                                asp-page-handler="Search"
+                                class="btn btn-primary">
+                            <span class="glyphicon glyphicon-search"></span>
+                            Search Incidents
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Actual report: retained during printing -->
+            @if (Model.ReportRows.Count > 0)
+            {
+                <section class="report-panel">
+
+                    <div class="report-document">
+
+                        <div class="report-header">
+                            <img src="/images/reps_logo.jpg"
+                             alt="Royal Eswatini Police Service logo"
+                             style="width: 50px !important; height: 50px !important; object-fit: contain;" />
+                            <h2>ROYAL ESWATINI POLICE SERVICE</h2>
+                            <p class="report-subtitle">INCIDENT REPORT</p>
+
+                            <p>
+                                Reporting Period:
+                                @Model.DateFrom — @Model.DateTo
+                            </p>
+
+                            <p>
+                                Generated:
+                                @DateTime.Now.ToString("dd MMMM yyyy, HH:mm")
+                            </p>
+                        </div>
+
+                        <div class="report-table-wrapper">
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Incident No.</th>
+                                        <th>Received Date</th>
+                                        <th>Incident Type</th>
+                                        <th>Police Station</th>
+                                        <th>Received By</th>
+                                        <th>Dispatch Time</th>
+                                        <th>Units Assigned</th>
+                                        <th>Unit Informed</th>
+                                        <th>Arrival Time</th>
+                                        <th>Duration</th>
+                                        <th>Delay Code</th>
+                                        <th>Result Code</th>
+                                        <th>Resolve Time</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var item in Model.ReportRows)
+                                    {
+                                        <tr>
+                                            <td>@item.IncidentNo</td>
+                                            <td>@item.ReceivedDate</td>
+                                            <td>@item.IncidentType</td>
+                                            <td>@item.PoliceStation</td>
+                                            <td>@item.ReceivedBy</td>
+                                            <td>@item.DispatchTime</td>
+                                            <td>@item.UnitAssigned</td>
+                                            <td>@item.UnitInformedOn</td>
+                                            <td>@item.ArrivalTime</td>
+                                            <td>@item.Duration</td>
+                                            <td>@item.DelayCode</td>
+                                            <td>@item.ResultCode</td>
+                                            <td>@item.ResolveTime</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="report-footer">
+                            Total incidents: @Model.ReportRows.Count
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <div class="text-right no-print">
+                    <button type="button"
+                            class="btn btn-default"
+                            onclick="window.print()">
+                        <span class="glyphicon glyphicon-print"></span>
+                        Print Report
+                    </button>
+                </div>
+            }
+            else if (Request.Method == "POST"
+                     && string.IsNullOrWhiteSpace(Model.ErrorMessage))
+            {
+                <div class="alert alert-info no-print">
+                    No incidents found for the selected criteria.
+                </div>
+            }
+
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            if ($.fn.datetimepicker) {
+                $('#DateFrom, #DateTo').datetimepicker({
+                    format: 'DD/MM/YYYY HH:mm',
+                    useCurrent: false
+                });
+
+                $('#DateFrom').on('dp.change', function (e) {
+                    $('#DateTo').data('DateTimePicker')
+                        ?.minDate(e.date);
+                });
+
+                $('#DateTo').on('dp.change', function (e) {
+                    $('#DateFrom').data('DateTimePicker')
+                        ?.maxDate(e.date);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

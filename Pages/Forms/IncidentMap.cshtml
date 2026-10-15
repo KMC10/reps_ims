@@ -1,0 +1,125 @@
+
+@page "/Forms/IncidentMap"
+@{
+    Layout = null;
+    ViewData["Title"] = "Incident Map";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Incident Map</title>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          crossorigin="" />
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        .map-error {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 10px 16px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: none;
+            max-width: 90%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="mapError" class="map-error"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            crossorigin=""></script>
+
+    <script>
+        const map = L.map('map').setView([-26.531607, 31.456589], 9);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        async function loadMapData() {
+            try {
+                const response = await fetch('/Forms/IncidentMapData', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: '{}'
+                });
+
+                if (!response.ok) {
+                    throw new Error(
+                        'Server returned HTTP ' + response.status
+                    );
+                }
+
+                const markers = await response.json();
+
+                markers.forEach(function (item) {
+                    const lat = Number(item.lat);
+                    const lon = Number(item.lon);
+                    const count = Number(item.count);
+
+                    if (!Number.isFinite(lat) ||
+                        !Number.isFinite(lon)) {
+                        return;
+                    }
+
+                    L.marker([lat, lon])
+                        .addTo(map)
+                        .bindPopup(
+                            '<strong>' + escapeHtml(item.regionName) +
+                            '</strong><br>Total: ' + count + ' incidents.'
+                        )
+                        .bindTooltip(String(count), {
+                            permanent: true,
+                            direction: 'top'
+                        });
+                });
+            } catch (error) {
+                console.error('Failed to load incident map data:', error);
+
+                const errorBox = document.getElementById('mapError');
+                errorBox.textContent =
+                    'Unable to load incident data. Please check the server response.';
+                errorBox.style.display = 'block';
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, function (char) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[char];
+            });
+        }
+
+        loadMapData();
+    </script>
+</body>
+</html>

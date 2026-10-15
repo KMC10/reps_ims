@@ -1,0 +1,66 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+artifacts/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+*.sln.ide
+
+# Visual Studio Code
+.vscode/
+
+# User-specific project files
+*.csproj.user
+*.vbproj.user
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/packages/
+
+# Logs
+*.log
+logs/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Test results
+TestResults/
+[Tt]est[Rr]esult*/
+coverage/
+
+# Local secrets and environment settings
+.env
+.env.*
+!.env.example
+
+# Local database files
+*.mdf
+*.ldf
+*.sqlite
+*.sqlite3
+
+# Publish output
+publish/

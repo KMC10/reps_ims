@@ -1,0 +1,35 @@
+@page "/Forms/WaitingForm"
+@{ Layout = null; ViewData["Title"] = "WaitingForm"; }
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="//bootstrap/css/bootstrap.css?v0.7" />
+    <link rel="stylesheet" href="//bootstrap/css/SiteCSS.css?v0.2" />
+    <link rel="stylesheet" href="//bootstrap/css/datepicker.css?v0.1" />
+
+    <script src="//bootstrap/js/jquery.min.js"></script>
+    <script src="//bootstrap/js/bootstrap.min.js"></script>
+    <script src="//bootstrap/js/bootstrap-datepicker.js?v0.1"></script>
+</head>
+<body>
+    <form method="post">
+        <div class="container-fluid" style="">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body" style="text-align: center;">
+                        <h4>Waiting for call...</h4>
+                    </div>
+                    <div runat="server" id="dvFooter" class="panel-footer" style="text-align:center;">
+                         <button type="submit" id="btnAddNew" name="btnAddNew" class="btn btn-info" data-handler="btnAddNew">Register new incident</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</body>
+</html>

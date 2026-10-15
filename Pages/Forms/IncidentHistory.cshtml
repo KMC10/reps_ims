@@ -1,0 +1,72 @@
+
+@page "/Forms/IncidentHistory"
+@model REPS_IMS.Pages.Forms.IncidentHistoryModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Incident History";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Incident History</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="/bootstrap/css/SiteCSS.css" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger">
+                        @Model.ErrorMessage
+                    </div>
+                }
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-condensed grid"
+                                   style="font-size: 12px !important;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 140px;">Capture Date</th>
+                                        <th style="width: 140px;">Capture By</th>
+                                        <th>Note</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.History.Count == 0
+                                        && string.IsNullOrWhiteSpace(Model.ErrorMessage))
+                                    {
+                                        <tr>
+                                            <td colspan="3">No history records found.</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in Model.History)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @(item.CaptureDate?.ToString("dd/MM/yyyy HH:mm") ?? "")
+                                                </td>
+                                                <td>@item.CapturedBy</td>
+                                                <td style="white-space: pre-wrap;">@item.Description</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

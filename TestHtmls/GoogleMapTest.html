@@ -1,0 +1,248 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style type="text/css">
+        html, body
+        {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map
+        {
+            height: 100%;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="control">
+        <input type="text" id="txtNumber" />
+        <input type="button" id="btnCheck" value="Check" onclick="ShowMarker()" />
+    </div>
+    <div id="map"></div>
+
+    <script type="text/javascript">
+
+        function ShowMarker() {
+            var number = document.getElementById('txtNumber').value;
+            codeNumber(number);
+        }
+
+        var map;
+        var marker;
+
+        function initMap() {
+
+            var lat = -26.534872;
+            var lng = 31.444436;
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: lat, lng: lng },
+                zoom: 10
+            });
+        }
+        //-26.534872, 
+
+        function codeNumber(number) {
+
+            var nocache = "";
+            var scriptTagID = "imsLocationScript";
+
+            // Remove previously inserted script
+            var oldScript = document.getElementById(scriptTagID);
+            if (oldScript) { oldScript.parentElement.removeChild(oldScript); }
+
+
+            var head = document.getElementsByTagName('head')[0];
+
+            var script = document.createElement("script");
+
+            script.type = "text/javascript";
+            script.id = scriptTagID;
+            script.src = "http://localhost:52718/Services/LocationService.aspx?phoneNumber=" + number + "&callback=setMapLocation";
+
+            document.body.appendChild(script);
+        }
+
+        function setMapLocation(lat, lng) {
+            if (lat != "0") {
+                map.setCenter({ lat: lat, lng: lng });
+                if (marker)
+                    marker.setMap(null);
+
+                marker = new google.maps.Marker({
+                    map: map,
+                    position: { lat: lat, lng: lng }
+                });
+                marker.setMap(map);
+            }
+            else {
+
+            }
+        }
+
+        function codeNumber1(number) {
+
+            var prefix = number.substr(0, 4);
+
+            if (prefix == 2452) {
+                lat = -26.538055;
+                lng = 30.997247;
+            }
+            else if (prefix == 2453) {
+                lat = -26.538055;
+                lng = 30.997247;
+            }
+            else if (prefix == 2363) {
+                lat = -26.781364;
+                lng = 31.928736;
+            }
+            else if (prefix == 2364) {
+                lat = -26.781364;
+                lng = 31.928736;
+            }
+            else if (prefix == 2217) {
+                lat = -26.973501;
+                lng = 31.324207;
+            }
+            else if (prefix == 2416) {
+                lat = -26.400253;
+                lng = 31.180840;
+            }
+            else if (prefix == 2548) {
+                lat = -26.460186;
+                lng = 31.299931;
+            }
+            else if (prefix == 237) {
+                lat = -27.067751;
+                lng = 31.058820;
+            }
+            else if (prefix == 2472) {
+                lat = -26.330326;
+                lng = 31.112375;
+            }
+            else if (prefix == 2528) {
+                lat = -26.531583;
+                lng = 31.187868;
+            }
+            else if (prefix == 2538) {
+                lat = -26.678260;
+                lng = 31.061017;
+            }
+            else if (prefix == 2505) {
+                lat = -26.510495;
+                lng = 31.358522;
+            }
+            else if (prefix == 2506) {
+                lat = -26.510495;
+                lng = 31.358522;
+            }
+            else if (prefix == 2517) {
+                lat = -26.500951;
+                lng = 31.312275;
+            }
+            else if (prefix == 2518) {
+                lat = -26.500951;
+                lng = 31.312275;
+            }
+            else if (prefix == 2404) {
+                lat = -26.304893;
+                lng = 31.134095;
+            }
+            else if (prefix == 2405) {
+                lat = -26.304893;
+                lng = 31.134095;
+            }
+            else if (prefix == 2406) {
+                lat = -26.304893;
+                lng = 31.134095;
+            }
+            else if (prefix == 2411) {
+                lat = -26.305878;
+                lng = 31.136772;
+            }
+            else if (prefix == 2467) {
+                lat = -26.453046;
+                lng = 31.042645;
+            }
+            else if (prefix == 2312) {
+                lat = -26.043368;
+                lng = 31.812722;
+            }
+            else if (prefix == 2313) {
+                lat = -26.043368;
+                lng = 31.812722;
+            }
+            else if (prefix == 2333) {
+                lat = -26.431344;
+                lng = 31.770137;
+            }
+            else if (prefix == 2442) {
+                lat = -26.227908;
+                lng = 31.039710;
+            }
+            else if (prefix == 2207) {
+                lat = -27.121058;
+                lng = 31.196425;
+            }
+            else if (prefix == 2303) {
+                lat = -27.02189;
+                lng = 31.894340;
+            }
+            else if (prefix == 2437) {
+                lat = -25.968422;
+                lng = 31.246490;
+            }
+            else if (prefix == 2422) {
+                lat = -26.303846;
+                lng = 31.114612;
+            }
+            else if (prefix == 2382) {
+                lat = -26.210798;
+                lng = 31.926806;
+            }
+            else if (prefix == 2383) {
+                lat = -26.210798;
+                lng = 31.926806;
+            }
+            else if (prefix == 2482) {
+                lat = -26.395893;
+                lng = 31.085574;
+            }
+            else if (prefix == 2344) {
+                lat = -26.677164;
+                lng = 31.682214;
+            }
+            else if (prefix == 2343) {
+                lat = -26.441673;
+                lng = 31.940903;
+            }
+            else if (prefix == 2322) {
+                lat = -26.001391;
+                lng = 31.760151;
+            }
+            else if (prefix == 2323) {
+                lat = -26.001391;
+                lng = 31.760151;
+            }
+
+            map.setCenter({ lat: lat, lng: lng });
+            if (marker)
+                marker.setMap(null);
+
+            marker = new google.maps.Marker({
+                map: map,
+                position: { lat: lat, lng: lng }
+            });
+            marker.setMap(map);
+        }
+
+
+
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdl9WHe1hiPwdSsOUk-kv05Z3wIMdlCn0&callback=initMap"></script>
+</body>
+</html>
