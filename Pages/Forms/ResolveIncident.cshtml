@@ -1,0 +1,420 @@
+﻿
+@page "/Forms/ResolveIncident"
+@model REPS_IMS.Pages.Forms.ResolveIncidentModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Resolve Incident";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Resolve Incident</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="/bootstrap/css/SiteCSS.css" />
+
+    <style>
+        body {
+            background: #f3f5f9;
+            padding: 28px 0;
+            color: #212529;
+        }
+
+        .resolve-container {
+            max-width: 1100px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(0,0,0,.08);
+        }
+
+        .page-heading {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .section-heading {
+            background: #f1f5f9;
+            padding: 12px 15px;
+            margin: 26px 0 18px;
+            font-weight: 700;
+            border-left: 4px solid #0d6efd;
+            border-radius: 4px;
+        }
+
+        .info-label {
+            font-size: .85rem;
+            font-weight: 600;
+            color: #6c757d;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            margin-bottom: 17px;
+            overflow-wrap: anywhere;
+            min-height: 22px;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .required-mark {
+            color: #dc3545;
+        }
+
+        .action-bar {
+            border-top: 1px solid #e9ecef;
+            margin-top: 22px;
+            padding-top: 20px;
+        }
+
+        .modal-content {
+            border: 0;
+            border-radius: 12px;
+            box-shadow: 0 12px 40px rgba(0,0,0,.18);
+        }
+
+        .modal-header {
+            border-bottom: 0;
+            padding: 22px 24px 8px;
+        }
+
+        .modal-body {
+            padding: 12px 24px 24px;
+        }
+
+        .modal-footer {
+            border-top: 0;
+            padding: 0 24px 24px;
+        }
+
+        .status-icon {
+            width: 54px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 27px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .success-icon {
+            color: #198754;
+            background: #d1e7dd;
+        }
+
+        .error-icon {
+            color: #dc3545;
+            background: #f8d7da;
+        }
+
+        @@media (max-width: 576px) {
+            .resolve-container {
+                margin: 0 12px;
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container resolve-container">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h3 class="page-heading">Resolve Incident</h3>
+            <p class="page-subtitle">
+                Review incident information and record the resolution details.
+            </p>
+        </div>
+
+        <a asp-page="/Forms/IncidentDetails"
+           asp-route-iid="@Model.iid"
+           class="btn btn-outline-secondary">
+            Back to Incident
+        </a>
+    </div>
+
+    @if (Model.Incident == null)
+    {
+        <div class="alert alert-warning">
+            Incident information could not be loaded.
+        </div>
+    }
+    else
+    {
+        var incident = Model.Incident;
+
+        <div class="alert alert-info">
+            <strong>Before resolving:</strong>
+            Review the information below and complete the resolution details.
+        </div>
+
+        <div class="section-heading">Incident Information</div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-label">Incident Number</div>
+                <div class="info-value">@incident.IncidentNo</div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-label">Reference Number</div>
+                <div class="info-value">@incident.ReferenceNo</div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-label">Priority</div>
+                <div class="info-value">@incident.Priority</div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-label">Region</div>
+                <div class="info-value">@incident.Region</div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-label">Incident Happening</div>
+                <div class="info-value">@incident.IncidentHappenning</div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-label">Incident Happened</div>
+                <div class="info-value">@incident.IncidentHappend</div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-label">Affected Person</div>
+                <div class="info-value">@incident.AffectedPerson</div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-label">Relationship</div>
+                <div class="info-value">@incident.Relationship</div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-label">Incident Address</div>
+                <div class="info-value">@incident.IncidentAddress</div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-label">Incident Types</div>
+                <div class="info-value">@incident.IncidentTypes</div>
+            </div>
+            <div class="col-12">
+                <div class="info-label">Additional Description</div>
+                <div class="info-value">@incident.AdditionalDescription</div>
+            </div>
+        </div>
+
+        <div class="section-heading">Caller Information</div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-label">Caller Name</div>
+                <div class="info-value">@incident.CallerName</div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-label">Caller Phone</div>
+                <div class="info-value">@incident.CallerPhone</div>
+            </div>
+            <div class="col-12">
+                <div class="info-label">Caller Address</div>
+                <div class="info-value">@incident.CallerAddress</div>
+            </div>
+        </div>
+
+        <div class="section-heading">Suspect Information</div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="info-label">Suspect Persons</div>
+                <div class="info-value">@incident.SuspectPersons</div>
+            </div>
+        </div>
+
+        <div class="section-heading">Resolution Details</div>
+
+        @if (incident.IncidentStatus != 0)
+        {
+            <div class="alert alert-warning">
+                This incident has already been resolved. It cannot be resolved again.
+            </div>
+        }
+        else
+        {
+            <form method="post">
+                <input type="hidden" asp-for="iid" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.ResultCode" class="form-label">
+                            Result Code <span class="required-mark">*</span>
+                        </label>
+                        <select asp-for="Input.ResultCode"
+                                asp-items="Model.ResultCodes"
+                                class="form-select">
+                        </select>
+                        <span asp-validation-for="Input.ResultCode"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.DelayReason" class="form-label">
+                            Delay Reason <span class="required-mark">*</span>
+                        </label>
+                        <select asp-for="Input.DelayReason"
+                                asp-items="Model.DelayReasons"
+                                class="form-select">
+                        </select>
+                        <span asp-validation-for="Input.DelayReason"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.CallDispatchTime" class="form-label">
+                            Call Dispatch Time
+                        </label>
+                        <input asp-for="Input.CallDispatchTime"
+                               type="datetime-local"
+                               class="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.UnitsAssigned" class="form-label">
+                            Units Assigned
+                        </label>
+                        <input asp-for="Input.UnitsAssigned"
+                               class="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.OfficerAssigned" class="form-label">
+                            Officer Assigned
+                        </label>
+                        <input asp-for="Input.OfficerAssigned"
+                               class="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.UnitInformedOn" class="form-label">
+                            Unit Informed On
+                        </label>
+                        <input asp-for="Input.UnitInformedOn"
+                               type="datetime-local"
+                               class="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.UnitArrivedOn" class="form-label">
+                            Unit Arrived On
+                        </label>
+                        <input asp-for="Input.UnitArrivedOn"
+                               type="datetime-local"
+                               class="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Input.ResolvedTime" class="form-label">
+                            Resolved Time <span class="required-mark">*</span>
+                        </label>
+                        <input asp-for="Input.ResolvedTime"
+                               type="datetime-local"
+                               class="form-control" />
+                        <span asp-validation-for="Input.ResolvedTime"
+                              class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="action-bar d-flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-success">
+                        Confirm Resolution
+                    </button>
+
+                    <a asp-page="/Forms/IncidentDetails"
+                       asp-route-iid="@Model.iid"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        }
+    }
+</div>
+
+<!-- Result modal -->
+<div class="modal fade" id="resultModal" tabindex="-1"
+     aria-labelledby="resultModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div id="resultIcon" class="status-icon success-icon">✓</div>
+                <button type="button" class="btn-close ms-auto"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <h5 class="modal-title fw-bold mb-2" id="resultModalTitle">
+                    Resolution Successful
+                </h5>
+                <p id="resultModalMessage" class="text-secondary mb-0">
+                    The incident has been resolved successfully.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a id="resultModalButton"
+                   asp-page="/Forms/IncidentDetails"
+                   asp-route-iid="@Model.iid"
+                   class="btn btn-success">
+                    Return to Incident
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const showModal = @(Model.ShowResultModal ? "true" : "false");
+
+        if (!showModal) return;
+
+        const succeeded = @(Model.ResolutionSucceeded ? "true" : "false");
+        const title = document.getElementById("resultModalTitle");
+        const message = document.getElementById("resultModalMessage");
+        const icon = document.getElementById("resultIcon");
+        const button = document.getElementById("resultModalButton");
+
+        if (succeeded) {
+            title.textContent = "Resolution Successful";
+            message.textContent = "The incident has been resolved successfully.";
+            icon.textContent = "✓";
+            icon.className = "status-icon success-icon";
+            button.className = "btn btn-success";
+        } else {
+            title.textContent = "Resolution Failed";
+            message.textContent = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ErrorMessage));
+            icon.textContent = "!";
+            icon.className = "status-icon error-icon";
+            button.textContent = "Back to Incident";
+            button.className = "btn btn-danger";
+        }
+
+        const modal = new bootstrap.Modal(
+            document.getElementById("resultModal"),
+            { backdrop: "static", keyboard: true }
+        );
+
+        modal.show();
+    });
+</script>
+</body>
+</html>

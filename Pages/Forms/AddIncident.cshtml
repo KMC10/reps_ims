@@ -1,10 +1,10 @@
+
 @page "/Forms/AddIncident"
 @model REPS_IMS.Pages.Forms.AddIncidentModel
 
 @{
     ViewData["Title"] = "Add Incident";
 }
-
 
 @if (TempData["SaveMessage"] != null)
 {
@@ -15,209 +15,216 @@
 
 <div asp-validation-summary="All" class="text-danger"></div>
 
-
-
 <div class="row incident-page">
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading clearfix">
                 Incident Information
-               
-<div class="pull-right">
-    
 
-<a href="@Model.ReturnUrl" class="btn btn-danger btn-sm">Close</a>
+                <div class="pull-right">
+                    <a href="@Model.ReturnUrl" class="btn btn-danger btn-sm">
+                        Close
+                    </a>
 
-
-    <button type="submit" form="incidentForm" class="btn btn-info btn-sm">
-        Save
-    </button>
-</div>
-
+                    <button type="submit"
+                            form="incidentForm"
+                            class="btn btn-info btn-sm">
+                        Save
+                    </button>
+                </div>
             </div>
+
             <form id="incidentForm" method="post">
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-9">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group form-group-sm">
-                                    <label>Call Attendant</label>
-                                        <input asp-for ="Input.CallAttendant" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Caller Cell/Phone</label>
-                                        <input asp-for="Input.CallerCellNo" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Caller Name</label>
-                                        <input asp-for="Input.CallerName" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Caller PIN</label>
-                                        <input asp-for="Input.CallerPIN" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Caller Address</label>
-                                        <input asp-for="Input.CallerAddress" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Region</label>
-                                        <select asp-for="Input.Region" class="form-control input-sm">
-                                        @foreach (var item in Model.Regions)
-                                        {
-                                            <option value="@item.Value">@item.Text</option>
-                                        }
-                                    </select>
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>By whom received</label>
-                                        <input asp-for="Input.CallRefNo" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                        <select asp-for="Input.Media" class="form-control input-sm">
-                                            @foreach (var item in Model.MediaOptions)
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-sm">
+                                        <label>Call Attendant</label>
+                                        <input asp-for="Input.CallAttendant"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Caller Cell/Phone</label>
+                                        <input asp-for="Input.CallerCellNo"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Caller Name</label>
+                                        <input asp-for="Input.CallerName"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Caller PIN</label>
+                                        <input asp-for="Input.CallerPIN"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Caller Address</label>
+                                        <input asp-for="Input.CallerAddress"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Region</label>
+                                        <select asp-for="Input.Region"
+                                                class="form-control input-sm">
+                                            @foreach (var item in Model.Regions)
                                             {
-                                                <option value="@item.Value">@item.Text</option>
+                                                <option value="@item.Value">
+                                                    @item.Text
+                                                </option>
                                             }
                                         </select>
-                                </div>
-                            </div>
+                                    </div>
 
-                            <div class="col-md-3">
-                                <div class="form-group form-group-sm">
-                                    <label>What is happening</label>
-                                        <input asp-for="Input.IncidentHappenning" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>What has happened</label>
-                                        <input asp-for="Input.IncidentHappend" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Affected Person</label>
-                                        <input asp-for="Input.AffectedPerson" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Relationship with Caller</label>
-                                    <input asp-for="Input.RelationShip" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Incident Address</label>
-                                        <input asp-for="Input.IncidentAddress" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Police Station</label>
-                                        <input asp-for="Input.ReferencePoint" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Suspect Persons</label>
-                                        <input asp-for="Input.SuspectPerson" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Accent</label>
-                                        <input asp-for="Input.Accent" class="form-control input-sm" />
-                                </div>
-                            </div>
+                                    <div class="form-group form-group-sm">
+                                        <label>By whom received</label>
+                                        <input asp-for="Input.CallRefNo"
+                                               class="form-control input-sm" />
+                                    </div>
 
-                            <div class="col-md-3">
-                                <div class="form-group form-group-sm">
-                                    <label>Incident Priority</label>
-                                    <select asp-for="Input.Priority" class="form-control input-sm">
-                                        @foreach (var item in Model.Priorities)
-                                        {
-                                            <option value="@item.Value">@item.Text</option>
-                                        }
-                                    </select>
+                                    <div class="form-group form-group-sm">
+                                        <label>Media</label>
+                                        <select asp-for="Input.Media"
+                                                class="form-control input-sm">
+                                            @foreach (var item in Model.MediaOptions)
+                                            {
+                                                <option value="@item.Value">
+                                                    @item.Text
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="form-group form-group-sm">
-                                    <label><input type="checkbox" asp-for="Input.HasWeapon" value="true" /> Do they have weapons</label>
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>What do they look like</label>
-                                        <input asp-for="Input.PhysicalAppearance" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>How are they dressed</label>
-                                        <input asp-for="Input.DressAppearance" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Which way did they go</label>
-                                        <input asp-for="Input.LeavingDirection" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>How long ago did it happen</label>
-                                        <input asp-for="Input.IncidentTime" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>What else is happening</label>
-                                        <input asp-for="Input.AdditionalDescription" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Incident No.</label>
-                                    <input asp-for="Input.IncidentNo" class="form-control input-sm" />
-                                </div>
-                            </div>
 
-                            <div class="col-md-3">
-                                <div class="form-group form-group-sm">
-                                    <label>Result Code</label>
-                                        <select asp-for="Input.ResultCode" class="form-control input-sm">
-                                        @foreach (var item in Model.ResultCodes)
-                                        {
-                                            <option value="@item.Value">@item.Text</option>
-                                        }
-                                    </select>
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-sm">
+                                        <label>What is happening</label>
+                                        <input asp-for="Input.IncidentHappenning"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>What has happened</label>
+                                        <input asp-for="Input.IncidentHappend"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Affected Person</label>
+                                        <input asp-for="Input.AffectedPerson"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Relationship with Caller</label>
+                                        <input asp-for="Input.RelationShip"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Incident Address</label>
+                                        <input asp-for="Input.IncidentAddress"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Police Station</label>
+                                        <input asp-for="Input.ReferencePoint"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Suspect Persons</label>
+                                        <input asp-for="Input.SuspectPerson"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Accent</label>
+                                        <input asp-for="Input.Accent"
+                                               class="form-control input-sm" />
+                                    </div>
                                 </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Delay Reason</label>
-                                        <select asp-for="Input.DelayReason" class="form-control input-sm">
-                                        @foreach (var item in Model.DelayReasons)
-                                        {
-                                            <option value="@item.Value">@item.Text</option>
-                                        }
-                                    </select>
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Call Dispatch Time</label>
-                                        <input asp-for="Input.CallDispatchTime" class="form-control input-sm incident-date" placeholder="DD/MM/YYYY HH:mm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Units Assigned</label>
-                                        <input asp-for="Input.UnitsAssigned" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Officer Assigned</label>
-                                        <input asp-for="Input.OfficerAssigned" class="form-control input-sm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Unit Informed On</label>
-                                        <input asp-for="Input.UnitInformed" class="form-control input-sm incident-date" placeholder="DD/MM/YYYY HH:mm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Unit Arrived On</label>
-                                        <input asp-for="Input.UnitArrived" class="form-control input-sm incident-date" placeholder="DD/MM/YYYY HH:mm" />
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label>Resolved Time</label>
-                                        <input asp-for="Input.ResolvedTime" class="form-control input-sm incident-date" placeholder="DD/MM/YYYY HH:mm" />
+
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-sm">
+                                        <label>Incident Priority</label>
+                                        <select asp-for="Input.Priority"
+                                                class="form-control input-sm">
+                                            @foreach (var item in Model.Priorities)
+                                            {
+                                                <option value="@item.Value">
+                                                    @item.Text
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>
+                                            <input type="checkbox"
+                                                   asp-for="Input.HasWeapon"
+                                                   value="true" />
+                                            Do they have weapons
+                                        </label>
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>What do they look like</label>
+                                        <input asp-for="Input.PhysicalAppearance"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>How are they dressed</label>
+                                        <input asp-for="Input.DressAppearance"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Which way did they go</label>
+                                        <input asp-for="Input.LeavingDirection"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>How long ago did it happen</label>
+                                        <input asp-for="Input.IncidentTime"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>What else is happening</label>
+                                        <input asp-for="Input.AdditionalDescription"
+                                               class="form-control input-sm" />
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <label>Incident No.</label>
+                                        <input asp-for="Input.IncidentNo"
+                                               class="form-control input-sm" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-
-
-                    
                         @{
                             var offenceCategories = new[]
                             {
-        new { Id = 1, Name = "CRIME AGAINST PROPERTY" },
-        new { Id = 2, Name = "STATUTE" },
-        new { Id = 3, Name = "OFFENCES AGAINST PUBLIC MORALITY" },
-        new { Id = 4, Name = "OFFENCE AGAINST PERSON" },
-        new { Id = 5, Name = "OFFENCE AGAINST LAWFUL AUTHORITY" },
-        new { Id = 6, Name = "OTHER MISCELLANEOUS CRIMES/INCIDENTS" }
-    };
+                                new { Id = 1, Name = "CRIME AGAINST PROPERTY" },
+                                new { Id = 2, Name = "STATUTE" },
+                                new { Id = 3, Name = "OFFENCES AGAINST PUBLIC MORALITY" },
+                                new { Id = 4, Name = "OFFENCE AGAINST PERSON" },
+                                new { Id = 5, Name = "OFFENCE AGAINST LAWFUL AUTHORITY" },
+                                new { Id = 6, Name = "OTHER MISCELLANEOUS CRIMES/INCIDENTS" }
+                            };
                         }
 
                         <div class="col-md-3">
@@ -237,9 +244,12 @@
                                             </h4>
                                         </div>
 
-                                        <div id="@id" class="panel-collapse collapse">
+                                        <div id="@id"
+                                             class="panel-collapse collapse">
                                             <div class="panel-body">
-                                                @foreach (var offence in Model.OffenceOptions.GetValueOrDefault(category.Id, new List<SelectListItem>()))
+                                                @foreach (var offence in Model.OffenceOptions.GetValueOrDefault(
+                                                    category.Id,
+                                                    new List<SelectListItem>()))
                                                 {
                                                     <label style="display:inline-block; margin-right:15px; font-weight:normal;">
                                                         <input type="checkbox"
@@ -254,18 +264,33 @@
                                 }
                             </div>
                         </div>
+                    </div>
                 </div>
-            </div>
             </form>
         </div>
     </div>
 </div>
 
 <style>
-    .incident-page .col-md-12 { padding-left: 2px; padding-right: 2px; }
-    .incident-page .form-group-sm { font-size: 12px; }
-    .incident-page .form-group { margin-bottom: 9px !important; }
-    .incident-page .form-control { height: 27px; padding: 2px 6px; }
-    .incident-page .panel-heading .btn { margin-left: 5px; }
-</style>
+    .incident-page .col-md-12 {
+        padding-left: 2px;
+        padding-right: 2px;
+    }
 
+    .incident-page .form-group-sm {
+        font-size: 12px;
+    }
+
+    .incident-page .form-group {
+        margin-bottom: 9px !important;
+    }
+
+    .incident-page .form-control {
+        height: 27px;
+        padding: 2px 6px;
+    }
+
+    .incident-page .panel-heading .btn {
+        margin-left: 5px;
+    }
+</style>

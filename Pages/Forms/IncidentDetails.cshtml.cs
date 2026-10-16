@@ -109,7 +109,7 @@ public class IncidentDetailsModel : PageModel
             return Page();
         }
 
-        return RedirectToPage("/Forms/IncidentDetails", new { iid });
+        return RedirectToPage("/Forms/ResolveIncident", new { iid });
     }
 
     private async Task LoadIncidentAsync(long iid)

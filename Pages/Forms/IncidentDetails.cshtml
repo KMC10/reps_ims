@@ -294,19 +294,12 @@
             <div class="document-actions no-print">
                 @if (Model.ShowResolveButton)
                 {
-                    <form method="post"
-                          asp-page-handler="MarkAsResolved"
-                          style="display:inline;">
-                        <input type="hidden"
-                               name="iid"
-                               value="@incident.IncidentID" />
+                    <a href="@Url.Page("/Forms/ResolveIncident", new { iid = Model.Incident.IncidentID })"
+                       target="_self"
+                       class="btn btn-success btn-sm">
+                        Mark As Resolved
+                    </a>
 
-                        <button type="submit"
-                                class="btn btn-success btn-sm"
-                                onclick="return confirm('Are you sure you want to mark this incident as resolved?');">
-                            Mark As Resolved
-                        </button>
-                    </form>
                 }
 
                 <button type="button"

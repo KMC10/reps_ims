@@ -223,16 +223,10 @@
 
 <script>
     function ShowDetails(incidentID) {
-        $('#myModal .modal-title').text('Incident Details');
-
-        $('#ifDetailsFrame').attr(
-            'src',
-            '/Forms/IncidentDetails?iid=' +
-            encodeURIComponent(incidentID)
-        );
-
-        $('#myModal').modal('show');
-    }
+    window.location.href =
+        '/Forms/IncidentDetails?iid=' +
+        encodeURIComponent(incidentID);
+}
 
     function ShowHistory(incidentID) {
         $('#myModal .modal-title').text('Incident History');

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace REPS_IMS.Pages.Forms
 {
@@ -10,22 +11,19 @@ namespace REPS_IMS.Pages.Forms
     {
         private readonly IConfiguration _configuration;
 
-        [BindProperty(SupportsGet = true)]
-        public string ReturnUrl { get; set; } = "/Forms/Dashboard";
-
-
         public AddIncidentModel(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
         [BindProperty(SupportsGet = true)]
+        public string ReturnUrl { get; set; } = "/Forms/Dashboard";
+
+        [BindProperty(SupportsGet = true)]
         public long? iid { get; set; }
 
         public List<SelectListItem> Regions { get; set; } = new();
         public List<SelectListItem> Priorities { get; set; } = new();
-        public List<SelectListItem> DelayReasons { get; set; } = new();
-        public List<SelectListItem> ResultCodes { get; set; } = new();
 
         public Dictionary<int, List<SelectListItem>> OffenceOptions { get; set; } = new();
 
@@ -71,14 +69,6 @@ namespace REPS_IMS.Pages.Forms
             public string? IncidentTime { get; set; }
             public string? AdditionalDescription { get; set; }
             public string? IncidentNo { get; set; }
-            public string? ResultCode { get; set; }
-            public string? DelayReason { get; set; }
-            public string? CallDispatchTime { get; set; }
-            public string? UnitsAssigned { get; set; }
-            public string? OfficerAssigned { get; set; }
-            public string? UnitInformed { get; set; }
-            public string? UnitArrived { get; set; }
-            public string? ResolvedTime { get; set; }
         }
 
         public async Task OnGetAsync()
@@ -92,28 +82,18 @@ namespace REPS_IMS.Pages.Forms
             Regions = await LoadOptions(
                 connection,
                 "SELECT RegionID, RegionName FROM dbo.Region ORDER BY RegionName",
-                "RegionID", "RegionName", "Select region");
+                "RegionID",
+                "RegionName",
+                "Select region");
 
             Priorities = await LoadOptions(
                 connection,
                 @"SELECT IncidentPriorityID, IncidentPriorityName
                   FROM dbo.IncidentPriority
                   ORDER BY IncidentPriorityID",
-                "IncidentPriorityID", "IncidentPriorityName", "Select priority");
-
-            DelayReasons = await LoadOptions(
-                connection,
-                @"SELECT DelayReasonID, DelayReasonDescription
-                  FROM dbo.DelayReason
-                  ORDER BY DelayReasonID",
-                "DelayReasonID", "DelayReasonDescription", "Select delay reason");
-
-            ResultCodes = await LoadOptions(
-                connection,
-                @"SELECT ResultCodeID, ResultCodeDescription
-                  FROM dbo.ResultCode
-                  ORDER BY ResultCodeID",
-                "ResultCodeID", "ResultCodeDescription", "Select result code");
+                "IncidentPriorityID",
+                "IncidentPriorityName",
+                "Select priority");
 
             const string offenceSql = @"
                 SELECT IncidentCategoryID, IncidentTypeID, IncidentTypeName
@@ -176,15 +156,7 @@ namespace REPS_IMS.Pages.Forms
                     i.DressAppearance,
                     i.LeavingDirection,
                     i.WhenHappend,
-                    i.AdditionalDescription,
-                    i.ResultCodeID,
-                    i.DelayReasonID,
-                    i.CallDispatchTime,
-                    i.UnitsAssigned,
-                    i.OfficerAssigned,
-                    i.UnitInformedOn,
-                    i.UnitArrivedOn,
-                    i.ResolvedTime
+                    i.AdditionalDescription
                 FROM dbo.IncidentRegister i
                 WHERE i.IncidentID = @IncidentID;";
 
@@ -229,15 +201,7 @@ namespace REPS_IMS.Pages.Forms
                     DressAppearance = DbText(reader, "DressAppearance"),
                     LeavingDirection = DbText(reader, "LeavingDirection"),
                     IncidentTime = DbDate(reader, "WhenHappend"),
-                    AdditionalDescription = DbText(reader, "AdditionalDescription"),
-                    ResultCode = DbText(reader, "ResultCodeID"),
-                    DelayReason = DbText(reader, "DelayReasonID"),
-                    CallDispatchTime = DbDate(reader, "CallDispatchTime"),
-                    UnitsAssigned = DbText(reader, "UnitsAssigned"),
-                    OfficerAssigned = DbText(reader, "OfficerAssigned"),
-                    UnitInformed = DbDate(reader, "UnitInformedOn"),
-                    UnitArrived = DbDate(reader, "UnitArrivedOn"),
-                    ResolvedTime = DbDate(reader, "ResolvedTime")
+                    AdditionalDescription = DbText(reader, "AdditionalDescription")
                 };
             }
 
@@ -262,6 +226,7 @@ namespace REPS_IMS.Pages.Forms
                 }
             }
         }
+
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -311,121 +276,222 @@ namespace REPS_IMS.Pages.Forms
 
             try
             {
-                const string sql = @"
-                    INSERT INTO dbo.IncidentRegister
-                    (
-                        ReferenceNo, IncidentNo, IncidentPriorityID, IncidentStatus,
-                        IncidentAddress, WhenHappend, IncidentHappenning, IncidentHappend,
-                        AdditionalDescription, ReferencePoint, RegionID, AffectedPerson,
-                        CallerFullName, CallerPhone, CallerAddress, CallType, Relationship,
-                        CallerLocation, SuspectGroup, SuspectPersons, Accent, HaveWeapons,
-                        PhysicalAppearance, DressAppearance, LeavingDirection,
-                        CapturedBy, CaptureDate, UpdateBy, UpdateDate,
-                        CaptureExtension, UpdateExtension, CallerPIN,
-                        CaptureUserName, UpdateUserName, ResolvedTime,
-                        ResultCodeID, DelayReasonID, CallDispatchTime, UnitsAssigned,
-                        OfficerAssigned, UnitInformedOn, UnitArrivedOn
-                    )
-                    OUTPUT INSERTED.IncidentID
-                    VALUES
-                    (
-                        @ReferenceNo, @IncidentNo, @PriorityID, 0,
-                        @IncidentAddress, @WhenHappened, @IncidentHappenning, @IncidentHappend,
-                        @AdditionalDescription, @ReferencePoint, @RegionID, @AffectedPerson,
-                        @CallerName, @CallerPhone, @CallerAddress, @CallType, @Relationship,
-                        '', '', @SuspectPerson, @Accent, @HasWeapon,
-                        @PhysicalAppearance, @DressAppearance, @LeavingDirection,
-                        @CapturedBy, @CaptureDate, '', @UpdateDate,
-                        NULL, NULL, @CallerPIN,
-                        @CaptureUserName, NULL, @ResolvedTime,
-                        @ResultCodeID, @DelayReasonID, @CallDispatchTime, @UnitsAssigned,
-                        @OfficerAssigned, @UnitInformedOn, @UnitArrivedOn
-                    );";
+                bool isEditing = iid.HasValue && iid.Value > 0;
+
+                const string insertSql = @"
+            INSERT INTO dbo.IncidentRegister
+            (
+                ReferenceNo, IncidentNo, IncidentPriorityID, IncidentStatus,
+                IncidentAddress, WhenHappend, IncidentHappenning, IncidentHappend,
+                AdditionalDescription, ReferencePoint, RegionID, AffectedPerson,
+                CallerFullName, CallerPhone, CallerAddress, CallType, Relationship,
+                CallerLocation, SuspectGroup, SuspectPersons, Accent, HaveWeapons,
+                PhysicalAppearance, DressAppearance, LeavingDirection,
+                CapturedBy, CaptureDate, UpdateBy, UpdateDate,
+                CaptureExtension, UpdateExtension, CallerPIN,
+                CaptureUserName, UpdateUserName
+            )
+            OUTPUT INSERTED.IncidentID
+            VALUES
+            (
+                @ReferenceNo, @IncidentNo, @PriorityID, 0,
+                @IncidentAddress, @WhenHappened, @IncidentHappenning, @IncidentHappend,
+                @AdditionalDescription, @ReferencePoint, @RegionID, @AffectedPerson,
+                @CallerName, @CallerPhone, @CallerAddress, @CallType, @Relationship,
+                '', '', @SuspectPerson, @Accent, @HasWeapon,
+                @PhysicalAppearance, @DressAppearance, @LeavingDirection,
+                @CapturedBy, @CaptureDate, '', @UpdateDate,
+                NULL, NULL, @CallerPIN,
+                @CaptureUserName, NULL
+            );";
+
+                const string updateSql = @"
+            UPDATE dbo.IncidentRegister
+            SET
+                ReferenceNo = @ReferenceNo,
+                IncidentNo = @IncidentNo,
+                IncidentPriorityID = @PriorityID,
+                IncidentAddress = @IncidentAddress,
+                WhenHappend = @WhenHappened,
+                IncidentHappenning = @IncidentHappenning,
+                IncidentHappend = @IncidentHappend,
+                AdditionalDescription = @AdditionalDescription,
+                ReferencePoint = @ReferencePoint,
+                RegionID = @RegionID,
+                AffectedPerson = @AffectedPerson,
+                CallerFullName = @CallerName,
+                CallerPhone = @CallerPhone,
+                CallerAddress = @CallerAddress,
+                CallType = @CallType,
+                Relationship = @Relationship,
+                SuspectPersons = @SuspectPerson,
+                Accent = @Accent,
+                HaveWeapons = @HasWeapon,
+                PhysicalAppearance = @PhysicalAppearance,
+                DressAppearance = @DressAppearance,
+                LeavingDirection = @LeavingDirection,
+                CallerPIN = @CallerPIN,
+                UpdateBy = @UpdateBy,
+                UpdateDate = GETDATE(),
+                UpdateUserName = @UpdateUserName
+            OUTPUT INSERTED.IncidentID
+            WHERE IncidentID = @IncidentID;";
 
                 long incidentId;
 
-                await using (var command =
-                    new SqlCommand(sql, connection, transaction))
+                await using (var command = new SqlCommand(
+                    isEditing ? updateSql : insertSql,
+                    connection,
+                    transaction))
                 {
-                    command.Parameters.AddWithValue("@ReferenceNo", Input.CallRefNo ?? "");
-                    command.Parameters.AddWithValue("@IncidentNo", Input.IncidentNo!.Trim());
-                    command.Parameters.AddWithValue("@PriorityID", priorityId);
-                    command.Parameters.AddWithValue("@IncidentAddress", Input.IncidentAddress ?? "");
-                    command.Parameters.AddWithValue("@WhenHappened", Input.IncidentTime ?? "");
-                    command.Parameters.AddWithValue("@IncidentHappenning", Input.IncidentHappenning ?? "");
-                    command.Parameters.AddWithValue("@IncidentHappend", Input.IncidentHappend ?? "");
-                    command.Parameters.AddWithValue("@AdditionalDescription", Input.AdditionalDescription ?? "");
-                    command.Parameters.AddWithValue("@ReferencePoint", Input.ReferencePoint ?? "");
-                    command.Parameters.AddWithValue("@RegionID", regionId);
-                    command.Parameters.AddWithValue("@AffectedPerson", Input.AffectedPerson ?? "");
-                    command.Parameters.AddWithValue("@CallerName", Input.CallerName!.Trim());
-                    command.Parameters.AddWithValue("@CallerPhone", Input.CallerCellNo ?? "");
-                    command.Parameters.AddWithValue("@CallerAddress", Input.CallerAddress ?? "");
-                    command.Parameters.AddWithValue("@CallType", callType);
-                    command.Parameters.AddWithValue("@Relationship", Input.RelationShip ?? "");
-                    command.Parameters.AddWithValue("@SuspectPerson", Input.SuspectPerson ?? "");
-                    command.Parameters.AddWithValue("@Accent", Input.Accent ?? "");
-                    command.Parameters.AddWithValue("@HasWeapon", Input.HasWeapon);
-                    command.Parameters.AddWithValue("@PhysicalAppearance", Input.PhysicalAppearance ?? "");
-                    command.Parameters.AddWithValue("@DressAppearance", Input.DressAppearance ?? "");
-                    command.Parameters.AddWithValue("@LeavingDirection", Input.LeavingDirection ?? "");
-                    command.Parameters.AddWithValue("@CapturedBy", username);
-                    command.Parameters.AddWithValue("@CaptureDate", DateTime.Now);
-                    command.Parameters.AddWithValue("@UpdateDate", new DateTime(1900, 1, 1));
-                    command.Parameters.AddWithValue("@CaptureUserName", username);
+                    if (isEditing)
+                    {
+                        command.Parameters.Add("@IncidentID", SqlDbType.BigInt)
+                            .Value = iid!.Value;
 
-                    command.Parameters.AddWithValue(
-                        "@CallerPIN",
-                        string.IsNullOrWhiteSpace(Input.CallerPIN)
+                        command.Parameters.Add("@UpdateBy", SqlDbType.NVarChar, 255)
+                            .Value = username;
+
+                        command.Parameters.Add("@UpdateUserName", SqlDbType.NVarChar, 255)
+                            .Value = username;
+                    }
+                    else
+                    {
+                        command.Parameters.Add("@CapturedBy", SqlDbType.NVarChar, 255)
+                            .Value = username;
+
+                        command.Parameters.Add("@CaptureDate", SqlDbType.DateTime)
+                            .Value = DateTime.Now;
+
+                        command.Parameters.Add("@CaptureUserName", SqlDbType.NVarChar, 255)
+                            .Value = username;
+
+                        command.Parameters.Add("@UpdateDate", SqlDbType.DateTime)
+                            .Value = new DateTime(1900, 1, 1);
+                    }
+
+                    command.Parameters.Add("@ReferenceNo", SqlDbType.NVarChar, 255)
+                        .Value = Input.CallRefNo ?? "";
+
+                    command.Parameters.Add("@IncidentNo", SqlDbType.NVarChar, 255)
+                        .Value = Input.IncidentNo!.Trim();
+
+                    command.Parameters.Add("@PriorityID", SqlDbType.Int)
+                        .Value = priorityId;
+
+                    command.Parameters.Add("@IncidentAddress", SqlDbType.NVarChar, -1)
+                        .Value = Input.IncidentAddress ?? "";
+
+                    command.Parameters.Add("@WhenHappened", SqlDbType.NVarChar, 255)
+                        .Value = Input.IncidentTime ?? "";
+
+                    command.Parameters.Add("@IncidentHappenning", SqlDbType.NVarChar, -1)
+                        .Value = Input.IncidentHappenning ?? "";
+
+                    command.Parameters.Add("@IncidentHappend", SqlDbType.NVarChar, -1)
+                        .Value = Input.IncidentHappend ?? "";
+
+                    command.Parameters.Add("@AdditionalDescription", SqlDbType.NVarChar, -1)
+                        .Value = Input.AdditionalDescription ?? "";
+
+                    command.Parameters.Add("@ReferencePoint", SqlDbType.NVarChar, 255)
+                        .Value = Input.ReferencePoint ?? "";
+
+                    command.Parameters.Add("@RegionID", SqlDbType.Int)
+                        .Value = regionId;
+
+                    command.Parameters.Add("@AffectedPerson", SqlDbType.NVarChar, 255)
+                        .Value = Input.AffectedPerson ?? "";
+
+                    command.Parameters.Add("@CallerName", SqlDbType.NVarChar, 255)
+                        .Value = Input.CallerName!.Trim();
+
+                    command.Parameters.Add("@CallerPhone", SqlDbType.NVarChar, 100)
+                        .Value = Input.CallerCellNo ?? "";
+
+                    command.Parameters.Add("@CallerAddress", SqlDbType.NVarChar, -1)
+                        .Value = Input.CallerAddress ?? "";
+
+                    command.Parameters.Add("@CallType", SqlDbType.Int)
+                        .Value = callType;
+
+                    command.Parameters.Add("@Relationship", SqlDbType.NVarChar, 255)
+                        .Value = Input.RelationShip ?? "";
+
+                    command.Parameters.Add("@SuspectPerson", SqlDbType.NVarChar, -1)
+                        .Value = Input.SuspectPerson ?? "";
+
+                    command.Parameters.Add("@Accent", SqlDbType.NVarChar, 255)
+                        .Value = Input.Accent ?? "";
+
+                    command.Parameters.Add("@HasWeapon", SqlDbType.Bit)
+                        .Value = Input.HasWeapon;
+
+                    command.Parameters.Add("@PhysicalAppearance", SqlDbType.NVarChar, -1)
+                        .Value = Input.PhysicalAppearance ?? "";
+
+                    command.Parameters.Add("@DressAppearance", SqlDbType.NVarChar, -1)
+                        .Value = Input.DressAppearance ?? "";
+
+                    command.Parameters.Add("@LeavingDirection", SqlDbType.NVarChar, -1)
+                        .Value = Input.LeavingDirection ?? "";
+
+                    command.Parameters.Add("@CallerPIN", SqlDbType.NVarChar, 50)
+                        .Value = string.IsNullOrWhiteSpace(Input.CallerPIN)
                             ? DBNull.Value
-                            : Input.CallerPIN);
+                            : Input.CallerPIN;
 
-                    command.Parameters.AddWithValue(
-                        "@ResolvedTime",
-                        (object?)ParseNullableDateTime(Input.ResolvedTime) ?? DBNull.Value);
+                    var result = await command.ExecuteScalarAsync();
 
-                    command.Parameters.AddWithValue(
-                        "@ResultCodeID",
-                        (object?)ParseNullableInt(Input.ResultCode) ?? DBNull.Value);
+                    if (result == null || result == DBNull.Value)
+                    {
+                        throw new InvalidOperationException(
+                            isEditing
+                                ? "The incident could not be found for updating."
+                                : "The incident could not be created.");
+                    }
 
-                    command.Parameters.AddWithValue(
-                        "@DelayReasonID",
-                        (object?)ParseNullableInt(Input.DelayReason) ?? DBNull.Value);
+                    incidentId = Convert.ToInt64(result);
+                }
 
-                    command.Parameters.AddWithValue(
-                        "@CallDispatchTime",
-                        (object?)ParseNullableDateTime(Input.CallDispatchTime) ?? DBNull.Value);
+                // Replace the incident's active offence selections.
+                // Status 4 retains the old records as inactive history.
+                if (isEditing)
+                {
+                    const string deactivateSql = @"
+                UPDATE dbo.IncidentTypeDetails
+                SET Status = 4
+                WHERE IncidentID = @IncidentID
+                  AND Status <> 4;";
 
-                    command.Parameters.AddWithValue("@UnitsAssigned", Input.UnitsAssigned ?? "");
-                    command.Parameters.AddWithValue("@OfficerAssigned", Input.OfficerAssigned ?? "");
+                    await using var deactivateCommand =
+                        new SqlCommand(deactivateSql, connection, transaction);
 
-                    command.Parameters.AddWithValue(
-                        "@UnitInformedOn",
-                        (object?)ParseNullableDateTime(Input.UnitInformed) ?? DBNull.Value);
+                    deactivateCommand.Parameters.Add("@IncidentID", SqlDbType.BigInt)
+                        .Value = incidentId;
 
-                    command.Parameters.AddWithValue(
-                        "@UnitArrivedOn",
-                        (object?)ParseNullableDateTime(Input.UnitArrived) ?? DBNull.Value);
-
-                    incidentId = Convert.ToInt64(await command.ExecuteScalarAsync());
+                    await deactivateCommand.ExecuteNonQueryAsync();
                 }
 
                 foreach (var offenceId in SelectedOffenceIds.Distinct())
                 {
                     const string offenceSql = @"
-                        INSERT INTO dbo.IncidentTypeDetails
-                            (IncidentID, IncidentCategoryID, IncidentTypeID, Status)
-                        SELECT
-                            @IncidentID, IncidentCategoryID, IncidentTypeID, 1
-                        FROM dbo.IncidentType
-                        WHERE IncidentTypeID = @TypeID
-                          AND Status = 1;";
+                INSERT INTO dbo.IncidentTypeDetails
+                    (IncidentID, IncidentCategoryID, IncidentTypeID, Status)
+                SELECT
+                    @IncidentID, IncidentCategoryID, IncidentTypeID, 1
+                FROM dbo.IncidentType
+                WHERE IncidentTypeID = @TypeID
+                  AND Status = 1;";
 
                     await using var offenceCommand =
                         new SqlCommand(offenceSql, connection, transaction);
 
-                    offenceCommand.Parameters.AddWithValue("@IncidentID", incidentId);
-                    offenceCommand.Parameters.AddWithValue("@TypeID", offenceId);
+                    offenceCommand.Parameters.Add("@IncidentID", SqlDbType.BigInt)
+                        .Value = incidentId;
+
+                    offenceCommand.Parameters.Add("@TypeID", SqlDbType.Int)
+                        .Value = offenceId;
 
                     int inserted = await offenceCommand.ExecuteNonQueryAsync();
 
@@ -437,32 +503,42 @@ namespace REPS_IMS.Pages.Forms
                 }
 
                 const string historySql = @"
-                    INSERT INTO dbo.IncidentHistory
-                        (IncidentID, CapturedBy, CaptureDate, CaptureExtension,
-                         CaptureUserName, Description, Status)
-                    VALUES
-                        (@IncidentID, @CapturedBy, @CaptureDate, '',
-                         @CaptureUserName, @Description, 1);";
+            INSERT INTO dbo.IncidentHistory
+                (IncidentID, CapturedBy, CaptureDate, CaptureExtension,
+                 CaptureUserName, Description, Status)
+            VALUES
+                (@IncidentID, @CapturedBy, GETDATE(), '',
+                 @CaptureUserName, @Description, 1);";
 
                 await using (var historyCommand =
                     new SqlCommand(historySql, connection, transaction))
                 {
-                    historyCommand.Parameters.AddWithValue("@IncidentID", incidentId);
-                    historyCommand.Parameters.AddWithValue("@CapturedBy", username);
-                    historyCommand.Parameters.AddWithValue("@CaptureDate", DateTime.Now);
-                    historyCommand.Parameters.AddWithValue("@CaptureUserName", username);
-                    historyCommand.Parameters.AddWithValue(
-                        "@Description", "Incident created.");
+                    historyCommand.Parameters.Add("@IncidentID", SqlDbType.BigInt)
+                        .Value = incidentId;
+
+                    historyCommand.Parameters.Add("@CapturedBy", SqlDbType.NVarChar, 255)
+                        .Value = username;
+
+                    historyCommand.Parameters.Add("@CaptureUserName", SqlDbType.NVarChar, 255)
+                        .Value = username;
+
+                    historyCommand.Parameters.Add("@Description", SqlDbType.NVarChar, -1)
+                        .Value = isEditing
+                            ? "Incident information updated."
+                            : "Incident created.";
 
                     await historyCommand.ExecuteNonQueryAsync();
                 }
 
                 await transaction.CommitAsync();
 
-                TempData["SaveMessage"] =
-                    $"Incident {Input.IncidentNo} saved successfully. Record ID: {incidentId}.";
+                TempData["SaveMessage"] = isEditing
+                    ? $"Incident {Input.IncidentNo} updated successfully."
+                    : $"Incident {Input.IncidentNo} saved successfully. Record ID: {incidentId}.";
 
-                return RedirectToPage("/Forms/AddIncident");
+                return RedirectToPage(
+                    "/Forms/IncidentDetails",
+                    new { iid = incidentId });
             }
             catch (Exception ex)
             {
@@ -476,13 +552,13 @@ namespace REPS_IMS.Pages.Forms
             }
         }
 
+
         private static string DbText(SqlDataReader reader, string column)
         {
             return reader[column] == DBNull.Value
                 ? ""
                 : Convert.ToString(reader[column]) ?? "";
         }
-
 
         private static string DbDate(SqlDataReader reader, string column)
         {
@@ -502,18 +578,6 @@ namespace REPS_IMS.Pages.Forms
             return DateTime.TryParse(text, out var parsedDate)
                 ? parsedDate.ToString("yyyy-MM-ddTHH:mm")
                 : "";
-        }
-
-
-        private static int? ParseNullableInt(string? value)
-        {
-            return int.TryParse(value, out int result) ? result : null;
-        }
-
-
-        private static DateTime? ParseNullableDateTime(string? value)
-        {
-            return DateTime.TryParse(value, out DateTime result) ? result : null;
         }
 
         private static async Task<List<SelectListItem>> LoadOptions(
